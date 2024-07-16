@@ -1,9 +1,25 @@
+using System.Net.NetworkInformation;
+using BookStore.Infrastructure.Context;
+using Microsoft.EntityFrameworkCore;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+builder.Services.AddDbContext<BookStoreDbContext>(db => 
+db.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")), ServiceLifetime.Singleton);
+
+// builder.Services.AddDbContext<BookStoreDbContext>(options => {
+//     IConfigurationRoot configuration = new ConfigurationBuilder()
+//             .SetBasePath(Directory.GetCurrentDirectory())
+//             .AddJsonFile("appsettings.json")
+//             .Build();
+//     var connectionString = configuration.GetConnectionString("DefaultConnection");
+//     options.UseSqlServer(connectionString);
+// });
 
 var app = builder.Build();
 
