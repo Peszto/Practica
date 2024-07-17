@@ -11,8 +11,8 @@ namespace BookStore.Infrastructure.Context
 
         public DbSet<Category> Categories { get; set; }
         public DbSet<Book> Books { get; set; }
-        protected override void OnConfiguring(DbContextOptionsBuilder options)
-            => options.UseSqlServer("Server=localhost,1433; Database=Bookstore;User=sa; Password=Pajti2004; TrustServerCertificate=True;");
+        // protected override void OnConfiguring(DbContextOptionsBuilder options)
+        //     => options.UseSqlServer("Server=localhost,1433; Database=Bookstore;User=sa; Password=Pajti2004; TrustServerCertificate=True;");
    
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

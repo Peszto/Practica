@@ -1,60 +1,75 @@
-using System.Net.NetworkInformation;
-using BookStore.Infrastructure.Context;
-using Microsoft.EntityFrameworkCore;
+// using System.Net.NetworkInformation;
+// using BookStore.Infrastructure.Context;
+// using Microsoft.EntityFrameworkCore;
 
-var builder = WebApplication.CreateBuilder(args);
+// var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+// // Add services to the container.
+// // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+// builder.Services.AddEndpointsApiExplorer();
+// builder.Services.AddSwaggerGen();
 
-builder.Services.AddDbContext<BookStoreDbContext>(db => 
-db.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")), ServiceLifetime.Singleton);
+// var app = builder.Build();
 
-// builder.Services.AddDbContext<BookStoreDbContext>(options => {
-//     IConfigurationRoot configuration = new ConfigurationBuilder()
-//             .SetBasePath(Directory.GetCurrentDirectory())
-//             .AddJsonFile("appsettings.json")
-//             .Build();
-//     var connectionString = configuration.GetConnectionString("DefaultConnection");
-//     options.UseSqlServer(connectionString);
-// });
+// // Configure the HTTP request pipeline.
+// if (app.Environment.IsDevelopment())
+// {
+//     app.UseSwagger();
+//     app.UseSwaggerUI();
+// }
 
-var app = builder.Build();
+// app.UseHttpsRedirection();
 
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+// // var summaries = new[]
+// // {
+// //     "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
+// // };
+
+// // app.MapGet("/weatherforecast", () =>
+// // {
+// //     var forecast =  Enumerable.Range(1, 5).Select(index =>
+// //         new WeatherForecast
+// //         (
+// //             DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
+// //             Random.Shared.Next(-20, 55),
+// //             summaries[Random.Shared.Next(summaries.Length)]
+// //         ))
+// //         .ToArray();
+// //     return forecast;
+// // })
+// // .WithName("GetWeatherForecast")
+// // .WithOpenApi();
+
+// app.Run();
+
+// // record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
+// // {
+// //     public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
+// // }
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
+
+namespace BookStore.API
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+    public class Program
+    {
+        public static void Main(string[] args)
+        {
+            CreateHostBuilder(args).Build().Run();
+        }
 
-app.UseHttpsRedirection();
-
-var summaries = new[]
-{
-    "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-};
-
-app.MapGet("/weatherforecast", () =>
-{
-    var forecast =  Enumerable.Range(1, 5).Select(index =>
-        new WeatherForecast
-        (
-            DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-            Random.Shared.Next(-20, 55),
-            summaries[Random.Shared.Next(summaries.Length)]
-        ))
-        .ToArray();
-    return forecast;
-})
-.WithName("GetWeatherForecast")
-.WithOpenApi();
-
-app.Run();
-
-record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
-{
-    public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
+        public static IHostBuilder CreateHostBuilder(string[] args) =>
+            Host.CreateDefaultBuilder(args)
+                .ConfigureWebHostDefaults(webBuilder =>
+                {
+                    webBuilder.UseStartup<Startup>();
+                });
+    }
 }
