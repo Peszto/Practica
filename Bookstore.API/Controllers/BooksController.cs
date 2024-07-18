@@ -30,7 +30,7 @@ namespace BookStore.API.Controllers
             return Ok(_mapper.Map<IEnumerable<BookResultDto>>(books));
         }
 
-        [HttpGet("id:int")]
+        [HttpGet("{id:int}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> GetById(int id)
@@ -73,6 +73,7 @@ namespace BookStore.API.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Update(int id, BookEditDto bookDto)
         {
+            Console.WriteLine("Update");
             if (id != bookDto.Id) return BadRequest();
 
             if (!ModelState.IsValid) return BadRequest();
@@ -87,6 +88,7 @@ namespace BookStore.API.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> Remove(int id)
         {
+            Console.WriteLine("Delete");
             var book = await _bookService.GetById(id);
             if (book == null) return NotFound();
 

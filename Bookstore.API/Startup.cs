@@ -23,6 +23,8 @@ namespace BookStore.API
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
             });
 
+            services.AddCors();
+
             services.AddAutoMapper(typeof(Startup));
 
             services.AddControllers();
@@ -52,6 +54,8 @@ namespace BookStore.API
             {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "v1");
             });
+
+            app.UseCors(x => x.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
 
             app.UseHttpsRedirection();
 
