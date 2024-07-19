@@ -31,6 +31,9 @@ namespace BookStore.Infrastructure.Mappings
             builder.Property(b => b.CategoryId)
                 .IsRequired();
 
+            builder.Property(b=>b.Pieces)
+                .IsRequired();
+
             builder.ToTable("Books");
         }
     }

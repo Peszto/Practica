@@ -10,6 +10,7 @@ namespace BookStore.Domain.Models
         public double Value { get; set; }
         public DateTime PublishDate { get; set; }
         public int CategoryId { get; set; }
+        public int Pieces { get; set; }
 
         /* EF Relation */
         public Category Category { get; set; }
