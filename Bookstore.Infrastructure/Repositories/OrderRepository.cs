@@ -18,8 +18,8 @@ namespace BookStore.Infrastructure.Repositories
         public override async Task<List<Orders>> GetAll()
         {
             return await Db.Orders.AsNoTracking()
-                .Include(c=>c.ClientId)
-                .Include(b=>b.BookId)
+                .Include(c=>c.Client)
+                .Include(b=>b.Book)
                 .OrderBy(o=>o.Id)
                 .ToListAsync();
         }
@@ -27,8 +27,8 @@ namespace BookStore.Infrastructure.Repositories
         public override async Task<Orders> GetById(int id)
         {
             return await Db.Orders.AsNoTracking()
-                .Include(c=>c.ClientId)
-                .Include(b=>b.BookId)
+                .Include(c=>c.Client)
+                .Include(b=>b.Book)
                 .Where(o => o.Id == id)
                 .FirstOrDefaultAsync();
         }

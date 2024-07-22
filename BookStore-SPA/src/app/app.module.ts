@@ -21,6 +21,10 @@ import { CategoryService } from './_services/category.service';
 import { ConfirmationDialogComponent } from './confirmation-dialog/confirmation-dialog.component';
 import { ConfirmationDialogService } from './_services/confirmation-dialog.service';
 import { NgbdDatepickerPopup } from './datepicker/datepicker-popup';
+import { OrderComponent } from './orders/order/order.component';
+import { OrderListComponent } from './orders/order-list/order-list.component';
+import { OrderService } from './_services/order.service';
+import { ClientService } from './_services/client.service';
 
 @NgModule({
   declarations: [
@@ -32,7 +36,9 @@ import { NgbdDatepickerPopup } from './datepicker/datepicker-popup';
     CategoryComponent,
     CategoryListComponent,
     ConfirmationDialogComponent,
-    NgbdDatepickerPopup
+    NgbdDatepickerPopup,
+    OrderComponent,
+    OrderListComponent
   ],
   imports: [
     BrowserModule,
@@ -46,7 +52,9 @@ import { NgbdDatepickerPopup } from './datepicker/datepicker-popup';
     provideHttpClient(withFetch()),
     BookService,
     CategoryService,
-    ConfirmationDialogService
+    ConfirmationDialogService,
+    OrderService,
+    ClientService
   ],
   bootstrap: [AppComponent]
 })

@@ -17,6 +17,6 @@ namespace BookStore.API.Dtos.Order
 
         [Required(ErrorMessage = _errorMessage)]
         public int OrderNr { get; set; }
-        public int TotalPrice { get; set; }
+        private int TotalPrice { get; set; }
     }
 }

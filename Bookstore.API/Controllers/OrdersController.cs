@@ -1,9 +1,9 @@
 ﻿using AutoMapper;
 using BookStore.API.Dtos.Order;
 using BookStore.Domain.Services;
-using BookStore.API.Controllers;
 using BookStore.Domain.Models;
 using Microsoft.AspNetCore.Mvc;
+using BookStore.Domain.Interfaces;
 
 namespace BookStore.API.Controllers
 {
@@ -11,8 +11,8 @@ namespace BookStore.API.Controllers
     public class OrdersController : MainController
     {
         private readonly IMapper _mapper;
-        private readonly OrderService _orderService;
-        public OrdersController(IMapper mapper, OrderService orderService)
+        private readonly IOrderService _orderService;
+        public OrdersController(IMapper mapper, IOrderService orderService)
         {
             _mapper = mapper;
             _orderService = orderService;

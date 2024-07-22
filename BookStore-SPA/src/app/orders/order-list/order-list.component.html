@@ -1,0 +1,48 @@
+<div class="jumbtron">
+    <h1 class="display-4 text-center">Orders</h1>
+</div>
+
+<div class="col-md-12">
+    <!-- <button type="button" class="btn btn-success" (click)="addOrder()">New Book</button> -->
+    <hr />
+
+    <div class="form-group">
+        <label for="Search">Search</label>
+        <div class="input-group">
+            <div class="input-group-prepend">
+                <div class="input-group-text bg-white">
+                    <i class="fas fa-search"></i>
+                </div>
+            </div>
+            <!-- <input type="text" [(ngModel)]="searchTerm" (ngModelChange)="searchBooks()" /> -->
+        </div>
+    </div>
+
+    <table class="table table-condensed table-bordered table-striped table-hover">
+        <thead>
+            <tr>
+                <th>Order Nr.</th>
+                <th>Client</th>
+                <th>Book title</th>
+                <th>Quantity</th>
+                <th>Total price</th>
+                <th>Options</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let order of orders">
+                <td>{{order.orderNr}}</td>
+                <td>{{order.clientName}}</td>
+                <td>{{order.bookName}}</td>
+                <td>{{order.quantity}}</td>
+                <td>{{order.totalPrice | currency}}</td>
+                <td class="action-button-column">
+                    <!-- <a title="Edit" (click)="editOrder(order.id)"><i class="fas fa-edit"></i> </a> -->
+                    <a title="Delete" (click)="deleteOrder(order.id)" style="margin-left: 12px;"><i
+                            class="fas fa-trash-alt"></i> </a>
+                </td>
+            </tr>
+        </tbody>
+
+    </table>
+</div>

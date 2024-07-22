@@ -1,4 +1,4 @@
-export class Orders {
+export class Order {
     id :number;
     clientId : number;
     bookId: number;
