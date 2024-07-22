@@ -35,7 +35,7 @@ namespace BookStore.API.Controllers
         public async Task<IActionResult>GetById(int id)
         {
             var category = await _categoryService.GetById(id);
-             if (category == null) return NotFound();
+            if (category == null) return NotFound();
 
             return Ok(_mapper.Map<CategoryResultDto>(category));
         }
@@ -60,7 +60,6 @@ namespace BookStore.API.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Update(int id, CategoryEditDto categoryDto)
         {
-            Console.WriteLine("Category Update");
             if (id != categoryDto.Id) return BadRequest();
 
             if (!ModelState.IsValid) return BadRequest();
@@ -75,7 +74,6 @@ namespace BookStore.API.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> Remove(int id)
         {
-            System.Diagnostics.Debug.WriteLine("Delete Category");
             var category = await _categoryService.GetById(id);
             if (category == null) return NotFound();
 

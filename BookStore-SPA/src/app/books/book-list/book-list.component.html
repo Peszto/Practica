@@ -26,6 +26,7 @@
                 <th>Description</th>
                 <th>Category</th>
                 <th>Value</th>
+                <th>In stock</th>
                 <th>Publish Date</th>
                 <th>Options</th>
             </tr>
@@ -36,7 +37,8 @@
                 <td>{{book.author}}</td>
                 <td>{{book.description.length > 25 ? (book.description | slice : 0:25) + '...' : book.description}}</td>
                 <td>{{book.categoryName}}</td>
-                <td>{{book.value | currency}}</td>
+                <td>{{book.price | currency}}</td>
+                <td>{{book.pieces}}</td>
                 <td>{{book.publishDate | date: 'mediumDate'}}</td>
                 <td class="action-button-column">
                     <a title="Edit" (click)="editBook(book.id)"><i class="fas fa-edit"></i> </a>

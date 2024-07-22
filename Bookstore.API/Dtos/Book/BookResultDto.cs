@@ -6,8 +6,9 @@ namespace BookStore.API.Dtos.Book
         public int CategoryId {get; set;}
         public string Name {get; set;}
         public string Author {get; set;}
+        public int Pieces {get; set;}
         public string Description {get;set;}
-        public float Value {get; set;}
+        public float Price {get; set;}
         public DateTime PublishDate {get; set;}
     }
 }

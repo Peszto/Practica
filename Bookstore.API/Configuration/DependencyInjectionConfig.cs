@@ -14,9 +14,13 @@ namespace BookStore.API.Configuration
 
             services.AddScoped<ICategoryRepository, CategoryRepository>();
             services.AddScoped<IBookRepository, BookRepository>();
+            services.AddScoped<IClientRepository, ClientRepository>();
+            services.AddScoped<IOrderRepository, OrderRepository>();
 
             services.AddScoped<ICategoryService, CategoryService>();
             services.AddScoped<IBookService, BookService>();
+            services.AddScoped<IClientService, ClientService>();
+            services.AddScoped<IOrderService, OrderService>();
 
             return services;
         }

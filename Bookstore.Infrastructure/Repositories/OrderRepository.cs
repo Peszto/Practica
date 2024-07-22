@@ -1,4 +1,4 @@
-﻿using Bookstore.Domain.Interfaces;
+﻿using BookStore.Domain.Interfaces;
 using BookStore.Domain.Models;
 using BookStore.Infrastructure.Context;
 using BookStore.Infrastructure.Repositories;
@@ -9,7 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Bookstore.Infrastructure.Repositories
+namespace BookStore.Infrastructure.Repositories
 {
     public class OrderRepository : Repository<Orders>, IOrderRepository
     {

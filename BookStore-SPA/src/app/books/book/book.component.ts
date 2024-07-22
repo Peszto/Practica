@@ -17,10 +17,10 @@ export class BookComponent implements OnInit {
   public categories: any;
 
   constructor(public service: BookService,
-              private categoryService: CategoryService,
-              private router: Router,
-              private route: ActivatedRoute,
-              private toastr: ToastrService) { }
+    private categoryService: CategoryService,
+    private router: Router,
+    private route: ActivatedRoute,
+    private toastr: ToastrService) { }
 
   ngOnInit() {
     this.resetForm();
@@ -32,7 +32,7 @@ export class BookComponent implements OnInit {
     if (id != null) {
       this.service.getBookById(id).subscribe(book => {
         this.formData = book;
-        const publishDate =  new Date(book.publishDate);
+        const publishDate = new Date(book.publishDate);
         this.formData.publishDate = { year: publishDate.getFullYear(), month: publishDate.getMonth(), day: publishDate.getDay() };
       }, err => {
         this.toastr.error('An error occurred on get the record.');
@@ -60,6 +60,7 @@ export class BookComponent implements OnInit {
 
   public insertRecord(form: NgForm) {
     this.service.addBook(form.form.value).subscribe(() => {
+      console.log(form.form.value);
       this.toastr.success('Registration successful');
       this.resetForm(form);
       this.router.navigate(['/books']);
@@ -92,13 +93,14 @@ export class BookComponent implements OnInit {
       name: '',
       author: '',
       description: '',
-      value: null,
+      price: null,
       publishDate: null,
-      categoryId: null
+      categoryId: null,
+      pieces: null
     };
   }
 
-  private convertStringToDate(date:any) {
+  private convertStringToDate(date: any) {
     return new Date(`${date.year}-${date.month}-${date.day}`);
   }
 }

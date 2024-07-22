@@ -1,4 +1,4 @@
-﻿using Bookstore.Domain.Interfaces;
+﻿using BookStore.Domain.Interfaces;
 using BookStore.Domain.Models;
 using System;
 using System.Collections.Generic;
@@ -8,7 +8,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
-namespace Bookstore.Domain.Services
+namespace BookStore.Domain.Services
 {
     public class ClientService : IClientService
     {
@@ -73,8 +73,9 @@ namespace Bookstore.Domain.Services
 
         private static bool IsValidPhoneNr(string phoneNr)
         {
+            //exactly 10 digits long
             string pattern = @"^\d{10}$";
-            return Regex.IsMatch(pattern, phoneNr);
+            return Regex.IsMatch(phoneNr, pattern);
         }
 
 

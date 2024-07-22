@@ -3,25 +3,28 @@ export class Book {
   name: string;
   author: string;
   description: string;
-  value: number | null;
+  price: number | null;
   publishDate: any;
   categoryId: number | null;
+  pieces: number | null;
 
   constructor(
     id: number,
     name: string,
     author: string,
     description: string,
-    value: number | null,
+    price: number | null,
     publishDate: any,
-    categoryId: number | null
+    categoryId: number | null,
+    pieces: number | null
   ) {
     this.id = id;
     this.name = name;
     this.author = author;
     this.description = description;
-    this.value = value;
+    this.price = price;
     this.publishDate = publishDate;
     this.categoryId = categoryId;
+    this.pieces = pieces;
   }
 }

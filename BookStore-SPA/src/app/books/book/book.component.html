@@ -36,10 +36,16 @@
             </div>
         </div>
         <div class="form-group">
-            <input name="value" #value="ngModel" [(ngModel)]="formData.value" class="form-control" placeholder="Value"
+            <input name="price" #price="ngModel" [(ngModel)]="formData.price" class="form-control" placeholder="Price"
                 type="number"
-                [ngClass]="{'is-invalid': form.controls['value']?.invalid && form.controls['value']?.touched}" required>
-            <div class="invalid-feedback" *ngIf="value.invalid && value.touched">Please inform the value</div>
+                [ngClass]="{'is-invalid': form.controls['price']?.invalid && form.controls['price']?.touched}" required>
+            <div class="invalid-feedback" *ngIf="price.invalid && price.touched">Please inform the price</div>
+        </div>
+        <div class="form-group">
+            <input name="pieces" #pieces="ngModel" [(ngModel)]="formData.pieces" class="form-control" placeholder="Quantity"
+                type="number"
+                [ngClass]="{'is-invalid': form.controls['pieces']?.invalid && form.controls['pieces']?.touched}" required>
+            <div class="invalid-feedback" *ngIf="pieces.invalid && pieces.touched">Please inform the quantity</div>
         </div>
         <div class="form-group">
             <div class="input-group">

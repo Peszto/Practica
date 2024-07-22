@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Bookstore.Domain.Interfaces
+namespace BookStore.Domain.Interfaces
 {
     public interface IClientService : IDisposable
     {

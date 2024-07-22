@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using BookStore.Domain.Interfaces;
 using BookStore.Domain.Models;
 
-namespace Bookstore.Domain.Interfaces
+namespace BookStore.Domain.Interfaces
 {
     public interface IOrderRepository : IRepository<Orders>
     {

@@ -2,7 +2,7 @@
 
 #nullable disable
 
-namespace Bookstore.Infrastructure.Migrations
+namespace BookStore.Infrastructure.Migrations
 {
     /// <inheritdoc />
     public partial class OrdersAndClientsTable : Migration

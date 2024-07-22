@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Bookstore.Infrastructure.Mappings
+namespace BookStore.Infrastructure.Mappings
 {
     public class ClientMapping :IEntityTypeConfiguration<Client>
     {

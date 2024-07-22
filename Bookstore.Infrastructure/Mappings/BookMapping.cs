@@ -22,7 +22,7 @@ namespace BookStore.Infrastructure.Mappings
                 .IsRequired(false)
                 .HasColumnType("varchar(350)");
 
-            builder.Property(b => b.Value)
+            builder.Property(b => b.Price)
                 .IsRequired();
 
             builder.Property(b => b.PublishDate)

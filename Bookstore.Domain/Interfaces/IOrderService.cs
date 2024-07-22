@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Bookstore.Domain.Interfaces
+namespace BookStore.Domain.Interfaces
 {
     public interface IOrderService : IDisposable
     {
@@ -14,5 +14,6 @@ namespace Bookstore.Domain.Interfaces
         Task<Orders> Add(Orders order);
         Task<Orders> Update(Orders order);
         Task<bool> Remove(Orders order);
+        Task<IEnumerable<Orders>> GetClientOrders(int id);
     }
 }

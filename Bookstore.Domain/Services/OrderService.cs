@@ -3,19 +3,21 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Bookstore.Domain.Interfaces;
+using BookStore.Domain.Interfaces;
 using BookStore.Domain.Interfaces;
 using BookStore.Domain.Models;
 
-namespace Bookstore.Domain.Services
+namespace BookStore.Domain.Services
 {
     public class OrderService : IOrderService
     {
         private readonly IOrderRepository _orderRepository;
+        private readonly IBookRepository _bookRepository;
 
-        public OrderService(IOrderRepository orderRepository)
+        public OrderService(IOrderRepository orderRepository, IBookRepository bookRepository)
         {
             _orderRepository = orderRepository;
+            _bookRepository=bookRepository;
         }
         public async Task<IEnumerable<Orders>> GetAll()
         {
@@ -27,6 +29,8 @@ namespace Bookstore.Domain.Services
         }
         public async Task<Orders> Add(Orders order)
         {
+            Book book = await _bookRepository.GetById(order.BookId);
+            order.TotalPrice = order.Quantity * book.Price;
             await _orderRepository.Add(order);
             return order;
         }
@@ -49,6 +53,11 @@ namespace Bookstore.Domain.Services
         {
             await _orderRepository.Remove(order);
             return true;
+        }
+
+        public async Task<IEnumerable<Orders>> GetClientOrders(int id)
+        {
+            return await _orderRepository.GetClientOrders(id);
         }
 
         public void Dispose()
