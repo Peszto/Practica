@@ -24,6 +24,7 @@ namespace BookStore.API.Controllers
         public async Task<IActionResult> GetAll()
         {
             var orders = await _orderService.GetAll();
+            Console.WriteLine(orders);
             return Ok(_mapper.Map<IEnumerable<OrderResultDto>>(orders));
         }
 

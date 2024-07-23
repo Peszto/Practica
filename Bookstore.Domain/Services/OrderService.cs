@@ -30,8 +30,14 @@ namespace BookStore.Domain.Services
         public async Task<Orders> Add(Orders order)
         {
             Book book = await _bookRepository.GetById(order.BookId);
+            if (book.Pieces < order.Quantity){
+                return null;
+            }
+            book.Pieces -= order.Quantity;
+
             order.TotalPrice = order.Quantity * book.Price;
             await _orderRepository.Add(order);
+            await _bookRepository.Update(book);
             return order;
         }
         public async Task<Orders> Update(Orders order)
@@ -46,7 +52,17 @@ namespace BookStore.Domain.Services
             ).Result.Any())
                 return null;
 
+            Book book = await _bookRepository.GetById(order.BookId);
+            if (book.Pieces < order.Quantity)
+            {
+                return null;
+            }
+
+            book.Pieces -= order.Quantity;
+
+            order.TotalPrice = order.Quantity * book.Price;
             await _orderRepository.Update(order);
+            await _bookRepository.Update(book);
             return order;
         }
         public async Task<bool> Remove(Orders order)

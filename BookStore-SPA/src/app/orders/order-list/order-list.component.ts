@@ -10,14 +10,14 @@ import { ClientService } from '../../_services/client.service';
 @Component({
   selector: 'app-order-list',
   templateUrl: './order-list.component.html',
-  styleUrl: './order-list.component.css'
+  styleUrl: './order-list.component.css',
 })
-export class OrderListComponent implements OnInit{
+export class OrderListComponent implements OnInit {
   public orders: any;
   public listComplet: any;
   public searchTerm!: string;
   public searchValueChanged: Subject<String> = new Subject<String>();
-  public clients: any[]= [];
+  public clients: any[] = [];
   public books: any[] = [];
 
   constructor(
@@ -26,57 +26,59 @@ export class OrderListComponent implements OnInit{
     private toastr: ToastrService,
     private confirmationDialogService: ConfirmationDialogService,
     private bookService: BookService,
-    private clientService:ClientService
+    private clientService: ClientService
   ) {}
 
-  ngOnInit(){
+  ngOnInit() {
     this.getValues();
-
-    
   }
 
-  private getValues(){
-    this.service.getOrder().subscribe((orders)=>{
+  private getValues() {
+    this.service.getOrders().subscribe((orders) => {
+      console.log(orders);
       this.orders = orders;
       this.listComplet = orders;
       this.fetchBooks();
       this.fetchClients();
-    })
+    });
   }
-  private fetchClients(){
-    this.clientService.getClients().subscribe((clients)=>{
+  private fetchClients() {
+    this.clientService.getClients().subscribe((clients) => {
       this.clients = clients;
       this.addClientNamesToOrders();
-    })
+    });
   }
-  private fetchBooks(){
-    this.bookService.getBooks().subscribe((books)=>{
+
+  private fetchBooks() {
+    this.bookService.getBooks().subscribe((books) => {
       this.books = books;
       this.addBookNamesToOrders();
-    })
+    });
   }
 
-  private addClientNamesToOrders(){
-    this.orders.forEach((order:any)=>{
-      const client = this.clients.find((client)=>client.id === order.clientId);
-      if(client){
-        order.clientName = client.firstName+ " " +client.lastName;
+  private addClientNamesToOrders() {
+    this.orders.forEach((order: any) => {
+      const client = this.clients.find(
+        (client) => client.id === order.clientId
+      );
+      if (client) {
+        order.clientName = client.firstName + ' ' + client.lastName;
       }
-    })
+    });
   }
 
-  private addBookNamesToOrders(){
-    this.orders.forEach((order:any)=>{
-      const book = this.books.find((book)=>book.id === order.bookId);
-      if(book) {
+  private addBookNamesToOrders() {
+    this.orders.forEach((order: any) => {
+      const book = this.books.find((book) => book.id === order.bookId);
+      if (book) {
         order.bookName = book.name;
       }
-    })
+    });
   }
 
-  public deleteOrder(orderId:number){
+  public deleteOrder(orderId: number) {
     this.confirmationDialogService
-    .confirm('Atention', 'Do you really want to delete this order?')
+      .confirm('Atention', 'Do you really want to delete this order?')
       .then(() =>
         this.service.deleteOrder(orderId).subscribe({
           next: () => {
@@ -91,4 +93,15 @@ export class OrderListComponent implements OnInit{
       .catch(() => '');
   }
 
+  public addOrder() {
+    this.router.navigate(['/order']);
+  }
+
+  public editOrder(orderId: number) {
+    this.router.navigate(['/order/' + orderId]);
+  }
+
+  public searchOrders() {
+    this.searchValueChanged.next(this.searchTerm);
+  }
 }

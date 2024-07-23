@@ -21,8 +21,12 @@ export class OrderService{
         return this.http.put(this.baseUrl+'orders/'+id,order);
     }
 
-    public getOrder() : Observable<Order[]>{
+    public getOrders() : Observable<Order[]>{
         return this.http.get<Order[]>(this.baseUrl + 'orders');
+    }
+
+    public getOrderById(id:number):Observable<Order>{
+        return this.http.get<Order>(this.baseUrl + 'orders/' + id);
     }
 
     public deleteOrder(id: number){

@@ -1,1 +1,45 @@
-<p>order works!</p>
+<div class="jumbtron">
+    <form #form="ngForm" (submit)="onSubmit(form)" autocomplete="off" class="col-md-5 form">
+        <h2 class="text-center text-primary">Order</h2>
+        <input type="hidden" name="id" #id="ngModel" [(ngModel)]="formData.id">
+        <div class="form-group">
+            <select class="form-control" name="bookId" #bookId [(ngModel)]="formData.bookId" required>
+                <option value="null" disabled selected hidden>Book Title</option>
+                <option *ngFor="let book of books" value="{{book.id}}">
+                    {{book.name}}
+                </option>
+            </select>
+            <div class="invalid-feedback" *ngIf="form.controls['bookId']?.invalid && form.controls['bookId']?.touched">Please inform the book
+            </div>
+        </div>
+        <div class="form-group">
+            <select class="form-control" name="clientId" #bookId [(ngModel)]="formData.clientId" required>
+                <option value="null" disabled selected hidden>Client Name</option>
+                <option *ngFor="let client of clients" value="{{client.id}}">
+                    {{client.name}}
+                </option>
+            </select>
+            <div class="invalid-feedback" *ngIf="form.controls['clientId']?.invalid && form.controls['clientId']?.touched">Please inform the client's name.
+            </div>
+        </div>
+        <div class="form-group">
+            <input name="quantity" #quantity="ngModel" [(ngModel)]="formData.quantity" class="form-control" required
+                [ngClass]="{'is-invalid': form.controls['quantity']?.invalid && form.controls['quantity']?.touched}"
+                placeholder="Quantity">
+            <div class="invalid-feedback" *ngIf="quantity.invalid && quantity.touched">Please inform the quantity of the book.</div>
+        </div>
+        <div class="form-group">
+            <input name="orderNr" #orderNr="ngModel" [(ngModel)]="formData.orderNr" class="form-control" required
+                [ngClass]="{'is-invalid': form.controls['orderNr']?.invalid && form.controls['orderNr']?.touched}"
+                placeholder="Order Number">
+            <div class="invalid-feedback" *ngIf="orderNr.invalid && orderNr.touched">Please inform the order number.</div>
+        </div>
+
+
+        <div class="form-group text-center">
+            <button class="btn btn-success mr-2" [disabled]="form.invalid" type="submit">Save</button>
+            <button class="btn btn-default" type="button" (click)="cancel()">Cancel</button>
+        </div>
+
+    </form>
+</div>

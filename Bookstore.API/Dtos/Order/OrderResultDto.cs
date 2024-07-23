@@ -6,7 +6,7 @@
         public int OrderNr { get; set; }
         public int BookId { get; set; }
         public int Quantity { get; set; }
-        private int TotalPrice { get; set; }
+        public decimal TotalPrice { get; set; }
         public int ClientId { get; set; }
     }
 }
