@@ -1,9 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { Subject } from 'rxjs';
 import { ToastrService } from 'ngx-toastr';
 import { ConfirmationDialogService } from '../../_services/confirmation-dialog.service';
-import { CategoryService } from '../../_services/category.service';
 import { OrderService } from '../../_services/order.service';
 import { BookService } from '../../_services/book.service';
 import { ClientService } from '../../_services/client.service';
@@ -13,7 +12,7 @@ import { ClientService } from '../../_services/client.service';
   templateUrl: './order-list.component.html',
   styleUrl: './order-list.component.css'
 })
-export class OrderListComponent {
+export class OrderListComponent implements OnInit{
   public orders: any;
   public listComplet: any;
   public searchTerm!: string;

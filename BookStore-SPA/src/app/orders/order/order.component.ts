@@ -1,8 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Order } from '../../_models/Order';
 import { OrderService } from '../../_services/order.service';
-import { Router } from 'express';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { CategoryService } from '../../_services/category.service';
 import { ToastrService } from 'ngx-toastr';
 
@@ -11,7 +10,7 @@ import { ToastrService } from 'ngx-toastr';
   templateUrl: './order.component.html',
   styleUrl: './order.component.css'
 })
-export class OrderComponent {
+export class OrderComponent implements OnInit {
   public formData!: Order;
   public categories: any;
 
@@ -21,7 +20,7 @@ export class OrderComponent {
     private route: ActivatedRoute,
     private toastr: ToastrService) { }
 
-  // ngOnInit(){
+  ngOnInit(){
   //   this.resetForm();
   //   let id;
   //   this.route.params.subscribe(params=>{
@@ -29,5 +28,5 @@ export class OrderComponent {
   //   });
 
   
-  //}
+  }
 }

@@ -7,6 +7,8 @@ import { CategoryListComponent } from './categories/category-list/category-list.
 import { CategoryComponent } from './categories/category/category.component';
 import { OrderComponent } from './orders/order/order.component';
 import { OrderListComponent } from './orders/order-list/order-list.component';
+import { ClientComponent } from './clients/client/client.component';
+import { ClientListComponent } from './clients/client-list/client-list.component';
 
 const routes: Routes = [
   { path: 'home', component: HomeComponent },
@@ -22,8 +24,9 @@ const routes: Routes = [
   { path: 'orders', component: OrderListComponent},
   { path: 'order', component: OrderComponent},
 
-  // { path:'clients', component: ClientListComponent},
-
+  { path: 'client', component: ClientComponent},
+  { path: 'clients', component: ClientListComponent},
+  { path: 'client/:id', component: ClientComponent},
 
   { path: '**', redirectTo: 'home', pathMatch: 'full' },
 ];

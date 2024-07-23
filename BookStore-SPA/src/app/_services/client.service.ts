@@ -25,7 +25,11 @@ export class ClientService{
         return this.http.get<Client[]>(this.baseUrl+'clients');
     }
 
+    public getClientById(id: any): Observable<Client>{
+        return this.http.get<Client>(this.baseUrl + 'clients/' + id);
+    } 
+
     public deleteClient(id:number){
-        return this.http.delete(this.baseUrl+'/clients'+id);
+        return this.http.delete(this.baseUrl+'clients/'+id);
     }
 }

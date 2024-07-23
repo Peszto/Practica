@@ -25,6 +25,8 @@ import { OrderComponent } from './orders/order/order.component';
 import { OrderListComponent } from './orders/order-list/order-list.component';
 import { OrderService } from './_services/order.service';
 import { ClientService } from './_services/client.service';
+import { ClientComponent } from './clients/client/client.component';
+import { ClientListComponent } from './clients/client-list/client-list.component';
 
 @NgModule({
   declarations: [
@@ -38,7 +40,9 @@ import { ClientService } from './_services/client.service';
     ConfirmationDialogComponent,
     NgbdDatepickerPopup,
     OrderComponent,
-    OrderListComponent
+    OrderListComponent,
+    ClientComponent,
+    ClientListComponent
   ],
   imports: [
     BrowserModule,

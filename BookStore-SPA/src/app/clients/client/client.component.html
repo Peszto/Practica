@@ -1,0 +1,42 @@
+<div class="jumbtron">
+    <form #form="ngForm" (submit)="onSubmit(form)" autocomplete="off" class="col-md-5 form">
+        <h2 class="text-center text-primary">Client</h2>
+        <input type="hidden" name="id" #id="ngModel" [(ngModel)]="formData.id">
+        <div class="form-group">
+            <input name="firstName" #firstName="ngModel" [(ngModel)]="formData.firstName" class="form-control" required
+                [ngClass]="{'is-invalid': form.controls['firstName']?.invalid && form.controls['firstName']?.touched}"
+                placeholder="First Name">
+            <div class="invalid-feedback" *ngIf="firstName.invalid && firstName.touched">Please inform the category.</div>
+        </div>
+        <div class="form-group">
+            <input name="lastName" #lastName="ngModel" [(ngModel)]="formData.lastName" class="form-control" required
+                [ngClass]="{'is-invalid': form.controls['lastName']?.invalid && form.controls['lastName']?.touched}"
+                placeholder="Last Name">
+            <div class="invalid-feedback" *ngIf="lastName.invalid && lastName.touched">Please inform the category.</div>
+        </div>
+        <div class="form-group">
+            <input name="email" #email="ngModel" [(ngModel)]="formData.email" class="form-control" required
+                [ngClass]="{'is-invalid': form.controls['email']?.invalid && form.controls['email']?.touched}"
+                placeholder="Email">
+            <div class="invalid-feedback" *ngIf="email.invalid && email.touched">Please inform the category.</div>
+        </div>
+        <div class="form-group">
+            <input name="phoneNr" #phoneNr="ngModel" [(ngModel)]="formData.phoneNr" class="form-control" required
+                [ngClass]="{'is-invalid': form.controls['phoneNr']?.invalid && form.controls['phoneNr']?.touched}"
+                placeholder="Phone Number">
+            <div class="invalid-feedback" *ngIf="phoneNr.invalid && phoneNr.touched">Please inform the category.</div>
+        </div>
+        <div class="form-group">
+            <input name="address" #address="ngModel" [(ngModel)]="formData.address" class="form-control" required
+                [ngClass]="{'is-invalid': form.controls['address']?.invalid && form.controls['address']?.touched}"
+                placeholder="Address">
+            <div class="invalid-feedback" *ngIf="address.invalid && address.touched">Please inform the category.</div>
+        </div>
+
+
+        <div class="form-group text-center">
+            <button class="btn btn-success mr-2" [disabled]="form.invalid" type="submit">Save</button>
+            <button class="btn btn-default" type="button" (click)="cancel()">Cancel</button>
+        </div>
+    </form>
+</div>
