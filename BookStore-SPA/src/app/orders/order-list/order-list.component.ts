@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { Subject } from 'rxjs';
+import { debounceTime, Subject } from 'rxjs';
 import { ToastrService } from 'ngx-toastr';
 import { ConfirmationDialogService } from '../../_services/confirmation-dialog.service';
 import { OrderService } from '../../_services/order.service';
@@ -31,11 +31,14 @@ export class OrderListComponent implements OnInit {
 
   ngOnInit() {
     this.getValues();
+
+    this.searchValueChanged.pipe(debounceTime(1000)).subscribe(() => {
+      this.search();
+    });
   }
 
   private getValues() {
     this.service.getOrders().subscribe((orders) => {
-      console.log(orders);
       this.orders = orders;
       this.listComplet = orders;
       this.fetchBooks();
@@ -103,5 +106,15 @@ export class OrderListComponent implements OnInit {
 
   public searchOrders() {
     this.searchValueChanged.next(this.searchTerm);
+  }
+
+  private search() {
+    if (this.searchTerm !== '') {
+      this.orders = this.orders.filter((order: { orderNr: { toString: () => string | string[]; }; }) =>
+        order.orderNr.toString().includes(this.searchTerm)
+      );
+    } else {
+      this.service.getOrders().subscribe((orders) => (this.orders = orders));
+    }
   }
 }

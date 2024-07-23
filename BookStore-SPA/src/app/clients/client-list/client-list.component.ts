@@ -8,9 +8,9 @@ import { Router } from '@angular/router';
 @Component({
   selector: 'app-client-list',
   templateUrl: './client-list.component.html',
-  styleUrl: './client-list.component.css'
+  styleUrl: './client-list.component.css',
 })
-export class ClientListComponent implements OnInit{
+export class ClientListComponent implements OnInit {
   public clients: any;
   public searchTerm!: string;
   public searchValueChanged: Subject<string> = new Subject<string>();
@@ -25,23 +25,23 @@ export class ClientListComponent implements OnInit{
   ngOnInit(): void {
     this.getClients();
 
-    this.searchValueChanged.pipe(debounceTime(1000)).subscribe(()=>{
+    this.searchValueChanged.pipe(debounceTime(1000)).subscribe(() => {
       this.search();
-    })
+    });
   }
 
-  private getClients(){
+  private getClients() {
     this.service.getClients().subscribe((clients) => {
       this.clients = clients;
     });
   }
 
-  public addClient(){
+  public addClient() {
     this.router.navigate(['/client']);
   }
 
-  public editClient(clientId: number){
-    this.router.navigate(['/client/' + clientId])
+  public editClient(clientId: number) {
+    this.router.navigate(['/client/' + clientId]);
   }
 
   public deleteClient(clientId: number) {
@@ -61,11 +61,21 @@ export class ClientListComponent implements OnInit{
       .catch(() => '');
   }
 
-  public searchClients(){
+  public searchClients() {
     this.searchValueChanged.next(this.searchTerm);
   }
 
-  private search(){
-    
+  private search() {
+    if (this.searchTerm !== '') {
+      this.clients = this.clients.filter((client: { firstName: any; lastName: any; }) =>
+        `${client.firstName} ${client.lastName}`
+          .toLowerCase()
+          .includes(this.searchTerm.toLowerCase())
+      );
+    } else {
+      this.service
+        .getClients()
+        .subscribe((clients) => (this.clients = clients));
+    }
   }
 }

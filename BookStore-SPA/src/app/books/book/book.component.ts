@@ -60,7 +60,6 @@ export class BookComponent implements OnInit {
 
   public insertRecord(form: NgForm) {
     this.service.addBook(form.form.value).subscribe(() => {
-      console.log(form.form.value);
       this.toastr.success('Registration successful');
       this.resetForm(form);
       this.router.navigate(['/books']);
