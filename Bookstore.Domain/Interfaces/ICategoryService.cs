@@ -10,6 +10,6 @@ namespace BookStore.Domain.Interfaces
         Task<Category> Update(Category category);
         Task<bool> Remove(Category category);
         Task<IEnumerable<Category>> Search(string categoryName);
-        Task<IEnumerable<IdAndName>> FilterByUserInput(string categoryName);
+        Task<IEnumerable<BasicModel>> FilterByUserInput(string categoryName);
     }
 }

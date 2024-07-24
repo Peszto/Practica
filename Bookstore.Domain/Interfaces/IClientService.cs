@@ -14,6 +14,6 @@ namespace BookStore.Domain.Interfaces
         Task<Client> Add(Client client);
         Task<Client> Update(Client client);
         Task<bool> Remove(Client client);
-        Task<IEnumerable<IdAndName>> FilterByUserInput(string clientName);
+        Task<IEnumerable<BasicModel>> FilterByUserInput(string clientName);
     }
 }

@@ -9,14 +9,14 @@ namespace BookStore.Infrastructure.Repositories
     {
         public CategoryRepository(BookStoreDbContext context) : base(context) { }
 
-        public async Task<IEnumerable<IdAndName>> FilterByUserInput (string categoryNamePrefix)
+        public async Task<IEnumerable<BasicModel>> FilterByUserInput (string categoryNamePrefix)
         {
             return await Db.Categories.AsNoTracking()
                 .Where(c => c.Name.ToLower().Contains(categoryNamePrefix.ToLower())).
-                Select(c => new IdAndName
+                Select(c => new BasicModel
                 {
                     Id = c.Id,
-                    FilteredValue = c.Name,
+                    Name = c.Name,
                 })
                 .ToListAsync();
         }

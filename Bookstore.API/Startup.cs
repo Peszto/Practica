@@ -19,7 +19,7 @@ namespace BookStore.API
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<BookStoreDbContext>(options =>
-            {
+           {
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
             });
 

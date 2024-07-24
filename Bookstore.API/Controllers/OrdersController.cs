@@ -4,6 +4,8 @@ using BookStore.Domain.Services;
 using BookStore.Domain.Models;
 using Microsoft.AspNetCore.Mvc;
 using BookStore.Domain.Interfaces;
+using BookStore.API.Dtos;
+using Bookstore.API.Dtos.Response;
 
 namespace BookStore.API.Controllers
 {
@@ -42,14 +44,20 @@ namespace BookStore.API.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Add(OrderAddDto orderDto)
         {
-            if (!ModelState.IsValid) return BadRequest();
+            try
+            {
+                if (!ModelState.IsValid) return BadRequest(new ErrorResponseDto { ErrorMessage = "Model is not valid ! " });
 
-            var order = _mapper.Map<Orders>(orderDto);
-            var orderResult = await _orderService.Add(order);
+                var order = _mapper.Map<Orders>(orderDto);
+                var orderResult = await _orderService.Add(order);
 
-            if (orderResult == null) return BadRequest();
+                return Ok(new SuccessResponseDto { SuccessMessage = "Order placed successfully!"});
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new ErrorResponseDto {  ErrorMessage = ex.Message});
+            }
 
-            return Ok(_mapper.Map<OrderResultDto>(orderResult));
         }
 
         [HttpPut("{id:int}")]
@@ -57,13 +65,24 @@ namespace BookStore.API.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Update(int id, OrderEditDto orderDto)
         {
-            if (id != orderDto.Id) return BadRequest();
+            try
+            {
+                if (id != orderDto.Id) return BadRequest(new ErrorResponseDto { ErrorMessage = "The order cannot be edited !" });
 
-            if (!ModelState.IsValid) return BadRequest();
+                if (!ModelState.IsValid) return BadRequest(new ErrorResponseDto { ErrorMessage = "Model is not valid ! " });
 
-            await _orderService.Update(_mapper.Map<Orders>(orderDto));
+                await _orderService.Update(_mapper.Map<Orders>(orderDto));
 
-            return Ok(orderDto);
+                return Ok(new SuccessResponseDto { SuccessMessage = "Order updated successfully !"});
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new ErrorResponseDto
+                {
+                    ErrorMessage = ex.Message
+                });
+            }
+            
         }
 
         [HttpDelete("{id:int}")]

@@ -1,38 +1,47 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Category } from '../_models/Category';
-import { Observable } from 'rxjs';
+import { filter, Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
+import { BasicModel } from '../_models/BasicModel';
 
 @Injectable({
-    providedIn: 'root'
+  providedIn: 'root',
 })
 export class CategoryService {
-    private baseUrl: string = environment.baseUrl + 'api/';
+  private baseUrl: string = environment.baseUrl + 'api/';
 
-    constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {}
 
-    public addCategory(category: Category) {
-        return this.http.post(this.baseUrl + 'categories', category);
-    }
+  public addCategory(category: Category) {
+    return this.http.post(this.baseUrl + 'categories', category);
+  }
 
-    public updateCategory(id: number, category: Category) {
-        return this.http.put(this.baseUrl + 'categories/' + id, category);
-    }
+  public updateCategory(id: number, category: Category) {
+    return this.http.put(this.baseUrl + 'categories/' + id, category);
+  }
 
-    public getCategories(): Observable<Category[]> {
-        return this.http.get<Category[]>(this.baseUrl + `categories`);
-    }
+  public getCategories(): Observable<Category[]> {
+    return this.http.get<Category[]>(this.baseUrl + `categories`);
+  }
 
-    public deleteCategory(id: number) {
-        return this.http.delete(this.baseUrl + 'categories/' + id);
-    }
+  public deleteCategory(id: number) {
+    return this.http.delete(this.baseUrl + 'categories/' + id);
+  }
 
-    public getCategoryById(id: any): Observable<Category> {
-        return this.http.get<Category>(this.baseUrl + 'categories/' + id);
-    }
+  public getCategoryById(id: any): Observable<Category> {
+    return this.http.get<Category>(this.baseUrl + 'categories/' + id);
+  }
 
-    public search(name: string): Observable<Category[]> {
-        return this.http.get<Category[]>(`${this.baseUrl}categories/search/${name}`);
-    }
+  public search(name: string): Observable<Category[]> {
+    return this.http.get<Category[]>(
+      `${this.baseUrl}categories/search/${name}`
+    );
+  }
+
+  public filterCategories(filteredValue: string): Observable<BasicModel[]> {
+    return this.http.get<BasicModel[]>(
+      this.baseUrl + 'category/filter/' + filteredValue
+    );
+  }
 }

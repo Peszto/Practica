@@ -27,14 +27,14 @@ namespace BookStore.Infrastructure.Repositories
                 FirstOrDefaultAsync();
         }
 
-        public async Task<IEnumerable<IdAndName>> FilterByUserInput(string clientNamePrefix)
+        public async Task<IEnumerable<BasicModel>> FilterByUserInput(string clientNamePrefix)
         {
             return await Db.Clients.AsNoTracking()
-                .Where(c => (c.FirstName.ToLower() + " " + c.LastName.ToLower()).StartsWith(clientNamePrefix))
-                .Select(c => new IdAndName
+                .Where(c => (c.FirstName.ToLower() + " " + c.LastName.ToLower()).Contains(clientNamePrefix))
+                .Select(c => new BasicModel
                 {
                     Id = c.Id,
-                    FilteredValue = c.FirstName + " " + c.LastName
+                    Name = c.FirstName + " " + c.LastName
                 })
                 .ToListAsync();
         }

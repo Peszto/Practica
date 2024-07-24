@@ -6,6 +6,6 @@ namespace BookStore.Domain.Interfaces
     {
         new Task<List<Client>> GetAll();
         new Task<Client> GetById(int id);
-        Task<IEnumerable<IdAndName>> FilterByUserInput(string clientNamePrefix);
+        Task<IEnumerable<BasicModel>> FilterByUserInput(string clientNamePrefix);
     }
 }

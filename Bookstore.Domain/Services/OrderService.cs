@@ -29,9 +29,16 @@ namespace BookStore.Domain.Services
         public async Task<Orders> Add(Orders order)
         {
             Book book = await _bookRepository.GetById(order.BookId);
-            if (book.Pieces < order.Quantity){
-                return null;
+            if (order.Quantity <=0)
+            {
+                throw new Exception("Quantity has to be greater than 0 !");
             }
+            
+            if(book.Pieces < order.Quantity)
+            {
+                throw new Exception("There are not enough pieces of books !");
+            }
+
             book.Pieces -= order.Quantity;
 
             order.TotalPrice = order.Quantity * book.Price;

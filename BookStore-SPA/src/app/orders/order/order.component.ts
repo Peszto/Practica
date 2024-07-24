@@ -4,10 +4,19 @@ import { OrderService } from '../../_services/order.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { NgForm } from '@angular/forms';
-import { debounceTime, distinctUntilChanged, map } from 'rxjs/operators';
+import {
+  debounceTime,
+  distinctUntilChanged,
+  map,
+  switchMap,
+  filter,
+} from 'rxjs/operators';
 import { BookService } from '../../_services/book.service';
 import { ClientService } from '../../_services/client.service';
 import { Observable } from 'rxjs';
+import { error } from 'console';
+import { SuccessResponse } from '../../_models/SuccessResponse';
+import { Server } from 'http';
 
 @Component({
   selector: 'app-order',
@@ -48,40 +57,9 @@ export class OrderComponent implements OnInit {
     } else {
       this.resetForm();
     }
-
-    // this.getBooks();
-    // this.getClients();
   }
 
-  // private getBooks() {
-  //   this.bookService.getBooks().subscribe(
-  //     (books) => {
-  //       this.books = books;
-  //       console.log(this.books);
-  //     },
-  //     (err) => {
-  //       this.toastr.error('An error occurred while getting the books.');
-  //     }
-  //   );
-  // }
-
-  // private getClients() {
-  //   this.clientService.getClients().subscribe(
-  //     (clients) => {
-  //       this.clients = clients;
-  //       this.clients.forEach(
-  //         (client: { name: string; firstName: any; lastName: any }) =>
-  //           (client.name = `${client.firstName} ${client.lastName}`)
-  //       );
-  //     },
-  //     (err) => {
-  //       this.toastr.error('An error occured while getting the clients');
-  //     }
-  //   );
-  // }
-
   public onSubmit(form: NgForm) {
-    console.log(form.form.value);    
     if (form.value.id === 0) {
       form.value.bookId = form.value.bookId.id;
       form.value.clientId = form.value.clientId.id;
@@ -92,29 +70,38 @@ export class OrderComponent implements OnInit {
   }
 
   private insertOrder(form: NgForm) {
-    this.service.addOrder(form.form.value).subscribe(
-      () => {
-        this.toastr.success('Order placed successfully!');
-        this.resetForm(form);
-        this.router.navigate(['/orders']);
+    this.service.addOrder(form.form.value).subscribe({
+      next: (response: SuccessResponse) => {
+        if (response.success) {
+          this.toastr.success(response.successMessage);
+          this.resetForm(form);
+          this.router.navigate(['/orders']);
+        } else {
+          this.toastr.error(response.successMessage);
+        }
       },
-      () => {
-        this.toastr.error('An error occured while placing the order.');
-      }
-    );
+      error: (err) => {
+
+        throw err;
+      },
+    });
   }
 
   private updateOrder(form: NgForm) {
-    this.service.updateOrder(form.form.value.id, form.form.value).subscribe(
-      () => {
-        this.toastr.success('Update successfull!');
-        this.resetForm(form);
-        this.router.navigate(['/orders']);
+    this.service.updateOrder(form.form.value.id, form.form.value).subscribe({
+      next: (response: SuccessResponse) => {
+        if (response.success) {
+          this.toastr.success(response.successMessage);
+          this.resetForm(form);
+          this.router.navigate(['/orders']);
+        } else {
+          this.toastr.error(response.successMessage);
+        }
       },
-      () => {
+      error: (err) => {
         this.toastr.error('An error occured on update of the order.');
-      }
-    );
+      },
+    });
   }
 
   private resetForm(form?: NgForm) {
@@ -138,21 +125,27 @@ export class OrderComponent implements OnInit {
 
   searchBooks = (text$: Observable<string>) =>
     text$.pipe(
-      debounceTime(200),
+      debounceTime(300),
       distinctUntilChanged(),
-      map(term =>
-        term.length < 2 ? [] : this.books.filter((v: { name: string; }) => v.name.toLowerCase().indexOf(term.toLowerCase()) > -1).slice(0, 10)
-      )
+      filter((term: string) => term.length >= 2),
+      switchMap((term) => this.bookService.filterBookNames(term))
     );
 
   searchClients = (text$: Observable<string>) =>
     text$.pipe(
-      debounceTime(200),
+      debounceTime(300),
       distinctUntilChanged(),
-      map(term =>
-        term.length < 2 ? [] : this.clients.filter((v: { name: string; }) => v.name.toLowerCase().indexOf(term.toLowerCase()) > -1).slice(0, 10)
-      )
+      filter((term: string) => term.length >= 2),
+      switchMap((term) => this.clientService.filterClientNames(term))
     );
+
+  onBookSelect(event: any) {
+    this.formData.bookId = event.item;
+  }
+
+  onClientSelect(event: any) {
+    this.formData.clientId = event.item;
+  }
 
   formatter = (x: { name: string }) => x.name;
 }

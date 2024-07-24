@@ -3,6 +3,7 @@ import { environment } from "../../environments/environment";
 import { HttpClient } from "@angular/common/http";
 import { Client } from "../_models/Client"
 import { Observable } from "rxjs";
+import { BasicModel } from "../_models/BasicModel";
 
 @Injectable({
     providedIn:'root'
@@ -31,5 +32,9 @@ export class ClientService{
 
     public deleteClient(id:number){
         return this.http.delete(this.baseUrl+'clients/'+id);
+    }
+
+    public filterClientNames(filteredValue : string) :Observable<BasicModel[]>{
+        return this.http.get<BasicModel[]>(this.baseUrl+'clients/filter/' + filteredValue);
     }
 }

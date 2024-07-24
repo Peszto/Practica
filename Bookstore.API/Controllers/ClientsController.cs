@@ -83,15 +83,15 @@ namespace BookStore.API.Controllers
         [Route("filter/{filteredValue}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<List<IdAndName>>> FilterBookName(string filteredValue)
+        public async Task<ActionResult<List<BasicModel>>> FilterBookName(string filteredValue)
         {
-            var caseMatch = _mapper.Map<List<IdAndName>>(await _clientService.FilterByUserInput(filteredValue));
+            var caseMatch = _mapper.Map<List<BasicModel>>(await _clientService.FilterByUserInput(filteredValue));
             Console.WriteLine(caseMatch);
 
 
             if (!caseMatch.Any()) return NotFound("No books were found");
 
-            return Ok(_mapper.Map<IEnumerable<IdAndName>>(caseMatch));
+            return Ok(_mapper.Map<IEnumerable<BasicModel>>(caseMatch));
         }
 
     }

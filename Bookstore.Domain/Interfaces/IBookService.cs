@@ -15,6 +15,6 @@ namespace BookStore.Domain.Interfaces
         Task<IEnumerable<Book>> GetBooksByCategory(int categoryId);
         Task<IEnumerable<Book>> Search(string bookName);
         Task<IEnumerable<Book>> SearchBookWithCategory(string searchedValue);
-        Task<IEnumerable<IdAndName>> FilterByUserInput(string bookName);
+        Task<IEnumerable<BasicModel>> FilterByUserInput(string bookName);
     }
 }

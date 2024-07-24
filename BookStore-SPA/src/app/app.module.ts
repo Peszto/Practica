@@ -1,6 +1,6 @@
 
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
+import { ErrorHandler, NgModule } from '@angular/core';
 
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -28,6 +28,8 @@ import { OrderService } from './_services/order.service';
 import { ClientService } from './_services/client.service';
 import { ClientComponent } from './clients/client/client.component';
 import { ClientListComponent } from './clients/client-list/client-list.component';
+import { GlobalErrorHandlerService } from './global-error-handler.service';
+
 
 @NgModule({
   declarations: [
@@ -60,7 +62,9 @@ import { ClientListComponent } from './clients/client-list/client-list.component
     CategoryService,
     ConfirmationDialogService,
     OrderService,
-    ClientService
+    ClientService,
+    GlobalErrorHandlerService,
+    { provide: ErrorHandler, useClass: GlobalErrorHandlerService }
   ],
   bootstrap: [AppComponent]
 })

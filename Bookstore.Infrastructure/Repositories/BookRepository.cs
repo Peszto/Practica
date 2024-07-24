@@ -42,11 +42,11 @@ namespace BookStore.Infrastructure.Repositories
                 .ToListAsync();
         }
 
-        public async Task<IEnumerable<IdAndName>> FilterByUserInput(string bookNamePrefix)
+        public async Task<IEnumerable<BasicModel>> FilterByUserInput(string bookNamePrefix)
         {
             return await Db.Books.AsNoTracking()
            .Where(b => b.Name.ToLower().Contains(bookNamePrefix.ToLower()))
-           .Select(b => new IdAndName { Id = b.Id, FilteredValue = b.Name })
+           .Select(b => new BasicModel { Id = b.Id, Name = b.Name })
            .ToListAsync();
         }
 
