@@ -78,6 +78,10 @@ namespace BookStore.Domain.Services
             return Regex.IsMatch(phoneNr, pattern);
         }
 
+        public async Task<IEnumerable<IdAndName>> FilterByUserInput(string clientName)
+        {
+            return await _clientRepository.FilterByUserInput(clientName);
+        }
 
     }
 }

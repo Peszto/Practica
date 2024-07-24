@@ -4,6 +4,7 @@ using BookStore.Domain.Interfaces;
 using BookStore.API.Controllers;
 using BookStore.Domain.Models;
 using Microsoft.AspNetCore.Mvc;
+using BookStore.Domain.Services;
 
 namespace BookStore.API.Controllers
 {
@@ -76,6 +77,21 @@ namespace BookStore.API.Controllers
             var result = await _clientService.Remove(client);
             if(!result) return NotFound();
             return Ok();
+        }
+
+        [HttpGet]
+        [Route("filter/{filteredValue}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<List<IdAndName>>> FilterBookName(string filteredValue)
+        {
+            var caseMatch = _mapper.Map<List<IdAndName>>(await _clientService.FilterByUserInput(filteredValue));
+            Console.WriteLine(caseMatch);
+
+
+            if (!caseMatch.Any()) return NotFound("No books were found");
+
+            return Ok(_mapper.Map<IEnumerable<IdAndName>>(caseMatch));
         }
 
     }

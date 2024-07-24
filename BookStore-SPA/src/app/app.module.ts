@@ -5,6 +5,7 @@ import { NgModule } from '@angular/core';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ToastrModule } from 'ngx-toastr';
+import { NgbTypeaheadModule } from '@ng-bootstrap/ng-bootstrap';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -42,9 +43,10 @@ import { ClientListComponent } from './clients/client-list/client-list.component
     OrderComponent,
     OrderListComponent,
     ClientComponent,
-    ClientListComponent
+    ClientListComponent,
   ],
   imports: [
+    NgbTypeaheadModule,
     BrowserModule,
     AppRoutingModule,
     FormsModule,

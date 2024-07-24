@@ -1,7 +1,10 @@
 .form {
-    margin: 0 auto !important;
-    float: none !important;
+  margin: 0 auto !important;
+  float: none !important;
 }
 .jumbtron {
-    padding-top: 60px;
+  padding-top: 60px;
+}
+.typeahead-results-aria-live {
+  display: none;
 }

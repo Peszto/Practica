@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
+using Bookstore.API.Dtos.IdAndName;
 using BookStore.API.Dtos.Book;
 using BookStore.Domain.Interfaces;
 using BookStore.Domain.Models;
@@ -118,9 +119,24 @@ namespace BookStore.API.Controllers
         {
             var books = _mapper.Map<List<Book>>(await _bookService.SearchBookWithCategory(searchedValue));
 
-            if (!books.Any()) return NotFound("None book was founded");
+            if (!books.Any()) return NotFound("No book was founded");
 
             return Ok(_mapper.Map<IEnumerable<BookResultDto>>(books));
+        }
+
+        [HttpGet]
+        [Route("filter/{filteredValue}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<List<IdAndName>>> FilterBookName(string filteredValue)
+        {
+            var caseMatch = _mapper.Map<List<IdAndName>>(await _bookService.FilterByUserInput(filteredValue));
+            Console.WriteLine(caseMatch);
+
+
+            if (!caseMatch.Any()) return NotFound("No books were found");
+
+            return Ok(_mapper.Map<IEnumerable<IdAndName>>(caseMatch));
         }
 
     }

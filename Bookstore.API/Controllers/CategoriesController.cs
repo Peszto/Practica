@@ -4,6 +4,7 @@ using AutoMapper;
 using BookStore.API.Dtos.Category;
 using BookStore.Domain.Interfaces;
 using BookStore.Domain.Models;
+using BookStore.Domain.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -96,6 +97,21 @@ namespace BookStore.API.Controllers
                 return NotFound("None category was founded");
 
             return Ok(categories);
+        }
+
+        [HttpGet]
+        [Route("filter/{filteredValue}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<List<IdAndName>>> FilterBookName(string filteredValue)
+        {
+            var caseMatch = _mapper.Map<List<IdAndName>>(await _categoryService.FilterByUserInput(filteredValue));
+            Console.WriteLine(caseMatch);
+
+
+            if (!caseMatch.Any()) return NotFound("No books were found");
+
+            return Ok(_mapper.Map<IEnumerable<IdAndName>>(caseMatch));
         }
 
     }

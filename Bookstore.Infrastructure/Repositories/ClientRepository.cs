@@ -26,5 +26,17 @@ namespace BookStore.Infrastructure.Repositories
                 Where(c => c.Id == id).
                 FirstOrDefaultAsync();
         }
+
+        public async Task<IEnumerable<IdAndName>> FilterByUserInput(string clientNamePrefix)
+        {
+            return await Db.Clients.AsNoTracking()
+                .Where(c => (c.FirstName.ToLower() + " " + c.LastName.ToLower()).StartsWith(clientNamePrefix))
+                .Select(c => new IdAndName
+                {
+                    Id = c.Id,
+                    FilteredValue = c.FirstName + " " + c.LastName
+                })
+                .ToListAsync();
+        }
     }
 }

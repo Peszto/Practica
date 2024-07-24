@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Book } from '../_models/Book';
 import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
+import { IdAndName } from '../_models/IdAndName';
 
 @Injectable({
     providedIn: 'root'
@@ -34,5 +35,9 @@ export class BookService {
 
     public searchBooksWithCategory(searchedValue: string): Observable<Book[]> {
         return this.http.get<Book[]>(`${this.baseUrl}books/search-book-with-category/${searchedValue}`);
+    }
+
+    public filterBookNames(filteredValue: string): Observable<IdAndName[]>{
+        return this.http.get<IdAndName[]>(this.baseUrl + 'books/filter/' + filteredValue);
     }
 }

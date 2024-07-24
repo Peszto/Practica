@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using BookStore.Domain.Interfaces;
-using BookStore.Domain.Models;
+﻿using BookStore.Domain.Models;
 
 namespace BookStore.Domain.Interfaces
 {
@@ -12,5 +6,6 @@ namespace BookStore.Domain.Interfaces
     {
         new Task<List<Client>> GetAll();
         new Task<Client> GetById(int id);
+        Task<IEnumerable<IdAndName>> FilterByUserInput(string clientNamePrefix);
     }
 }

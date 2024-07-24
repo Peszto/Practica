@@ -3,25 +3,37 @@
         <h2 class="text-center text-primary">Order</h2>
         <input type="hidden" name="id" #id="ngModel" [(ngModel)]="formData.id">
         <div class="form-group">
-            <select class="form-control" name="bookId" #bookId [(ngModel)]="formData.bookId" required>
-                <option value="null" disabled selected hidden>Book Title</option>
-                <option *ngFor="let book of books" value="{{book.id}}">
-                    {{book.name}}
-                </option>
-            </select>
-            <div class="invalid-feedback" *ngIf="form.controls['bookId']?.invalid && form.controls['bookId']?.touched">Please inform the book
-            </div>
-        </div>
-        <div class="form-group">
-            <select class="form-control" name="clientId" #bookId [(ngModel)]="formData.clientId" required>
-                <option value="null" disabled selected hidden>Client Name</option>
-                <option *ngFor="let client of clients" value="{{client.id}}">
-                    {{client.name}}
-                </option>
-            </select>
-            <div class="invalid-feedback" *ngIf="form.controls['clientId']?.invalid && form.controls['clientId']?.touched">Please inform the client's name.
-            </div>
-        </div>
+            <input
+              id="bookTypeahead"
+              type="text"
+              class="form-control"
+              name="bookId"
+              #bookId [(ngModel)]="formData.bookId"
+              [ngbTypeahead]="searchBooks"
+              [resultFormatter]="formatter"
+              [inputFormatter]="formatter"
+              placeholder="Book Title"
+              required
+            />
+            <div class="invalid-feedback" *ngIf="form.controls['bookId']?.invalid && form.controls['bookId']?.touched">Please inform the book.</div>
+          </div>
+      
+          <div class="form-group">
+            <input
+              id="clientTypeahead"
+              type="text"
+              class="form-control"
+              name="clientId"
+              #clientId  [(ngModel)]="formData.clientId"
+              [ngbTypeahead]="searchClients"
+              [resultFormatter]="formatter"
+              [inputFormatter]="formatter"
+              placeholder="Client Name"              
+              required
+            />
+            <div class="invalid-feedback" *ngIf="form.controls['clientId']?.invalid && form.controls['clientId']?.touched">Please inform the client's name.</div>
+          </div>
+      
         <div class="form-group">
             <input name="quantity" #quantity="ngModel" [(ngModel)]="formData.quantity" class="form-control" required
                 [ngClass]="{'is-invalid': form.controls['quantity']?.invalid && form.controls['quantity']?.touched}"

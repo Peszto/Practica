@@ -1,6 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using BookStore.Domain.Models;
 
 namespace BookStore.Domain.Interfaces
@@ -13,5 +10,6 @@ namespace BookStore.Domain.Interfaces
         Task<Category> Update(Category category);
         Task<bool> Remove(Category category);
         Task<IEnumerable<Category>> Search(string categoryName);
+        Task<IEnumerable<IdAndName>> FilterByUserInput(string categoryName);
     }
 }

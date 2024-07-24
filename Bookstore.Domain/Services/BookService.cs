@@ -64,6 +64,11 @@ namespace BookStore.Domain.Services
             return await _bookRepository.SearchBookWithCategory(searchedValue);
         }
 
+        public async Task<IEnumerable<IdAndName>> FilterByUserInput(string bookName)
+        {
+            return await _bookRepository.FilterByUserInput(bookName);
+        }
+
         public void Dispose()
         {
             _bookRepository?.Dispose();

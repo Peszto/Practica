@@ -1,8 +1,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using BookStore.Domain.Interfaces;
 using BookStore.Domain.Models;
+using BookStore.Domain.Interfaces;
 using BookStore.Infrastructure.Context;
 using Microsoft.EntityFrameworkCore;
 
@@ -41,5 +41,14 @@ namespace BookStore.Infrastructure.Repositories
                             b.Category.Name.Contains(searchedValue))
                 .ToListAsync();
         }
+
+        public async Task<IEnumerable<IdAndName>> FilterByUserInput(string bookNamePrefix)
+        {
+            return await Db.Books.AsNoTracking()
+           .Where(b => b.Name.ToLower().Contains(bookNamePrefix.ToLower()))
+           .Select(b => new IdAndName { Id = b.Id, FilteredValue = b.Name })
+           .ToListAsync();
+        }
+
     }
 }
