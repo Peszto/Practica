@@ -9,15 +9,11 @@ import {
   distinctUntilChanged,
   map,
   switchMap,
-  filter,
 } from 'rxjs/operators';
 import { BookService } from '../../_services/book.service';
 import { ClientService } from '../../_services/client.service';
 import { Observable, of, OperatorFunction, Subject } from 'rxjs';
-import { error } from 'console';
 import { ApiResponse } from '../../_models/ApiResponse';
-import { Server } from 'http';
-import { Book } from '../../_models/Book';
 import { BasicModel } from '../../_models/BasicModel';
 
 @Component({
@@ -31,9 +27,8 @@ export class OrderComponent implements OnInit {
   public books: any;
   public clients: any;
   public selectedBookPrice? : number | null;
-  private bookSearchTerms = new Subject<string>();
-  public model : any;
- 
+  public isBookNameValid : boolean = false;
+  public isClientNameValid: boolean = false;
 
   constructor(
     public service: OrderService,
@@ -67,13 +62,20 @@ export class OrderComponent implements OnInit {
   }
 
   public onSubmit(form: NgForm) {
-    if (form.value.id === 0) {
-      form.value.bookId = form.value.bookId.id;
-      form.value.clientId = form.value.clientId.id;
-      this.insertOrder(form);
-    } else {
-      this.updateOrder(form);
+    if(form.valid && this.isBookNameValid && this.isClientNameValid){
+      if (form.value.id === 0) {
+        form.value.bookId = form.value.bookId.id;
+        form.value.clientId = form.value.clientId.id;
+        this.insertOrder(form);
+      } else {
+        this.updateOrder(form);
+      }
     }
+    else
+    {
+      this.toastr.error('Please ensure all fields are filled out correctly !');
+    }
+    
   }
 
   private insertOrder(form: NgForm) {
@@ -138,10 +140,11 @@ export class OrderComponent implements OnInit {
         this.bookService.filterBookNames(term).pipe(
           map((response: BasicModel[] | ApiResponse) => {
             if (Array.isArray(response)) {
+              this.isBookNameValid = true;
               return response;
             } else {
               this.toastr.error(response.message);
-              console.log(response);
+              this.isBookNameValid = false;
               return [];
             }
           })
@@ -158,9 +161,11 @@ export class OrderComponent implements OnInit {
         this.clientService.filterClientNames(term).pipe(
           map((response: BasicModel[] | ApiResponse) => {
             if (Array.isArray(response)) {
+              this.isClientNameValid = true;
               return response;
             } else {
               this.toastr.error(response.message);
+              this.isClientNameValid = false;
               return [];
             }
           }) 
