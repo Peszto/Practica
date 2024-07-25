@@ -43,6 +43,7 @@ namespace BookStore.Domain.Services
 
             order.TotalPrice = order.Quantity * book.Price;
             order.OrderNr = OrderNumberGenerator();
+
             await _orderRepository.Add(order);
             await _bookRepository.Update(book);
             return order;
@@ -57,20 +58,25 @@ namespace BookStore.Domain.Services
             && o.OrderNr ==order.OrderNr
             && o.Id != order.Id
             ).Result.Any())
-                return null;
+                throw new Exception("The order you are trying to edit does not exist!");
 
             Book book = await _bookRepository.GetById(order.BookId);
-            if (book.Pieces < order.Quantity)
-            {
-                return null;
-            }
+            //if(order.Quantity > newOrder.Quantity)
+            //{
+            //    book.Pieces += order.Quantity - newOrder.Quantity;
+            //}
+            //else if(book.Pieces - order.Quantity + newOrder.Quantity >=0 ) 
+            //{
+            //    book.Pieces -= (order.Quantity - newOrder.Quantity);
+            //}
+         
 
-            book.Pieces -= order.Quantity;
             order.TotalPrice = order.Quantity * book.Price;
             await _orderRepository.Update(order);
             await _bookRepository.Update(book);
             return order;
         }
+
         public async Task<bool> Remove(Orders order)
         {
             await _orderRepository.Remove(order);

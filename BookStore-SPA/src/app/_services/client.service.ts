@@ -4,6 +4,7 @@ import { HttpClient } from "@angular/common/http";
 import { Client } from "../_models/Client"
 import { Observable } from "rxjs";
 import { BasicModel } from "../_models/BasicModel";
+import { ApiResponse } from "../_models/ApiResponse";
 
 @Injectable({
     providedIn:'root'
@@ -34,7 +35,7 @@ export class ClientService{
         return this.http.delete(this.baseUrl+'clients/'+id);
     }
 
-    public filterClientNames(filteredValue : string) :Observable<BasicModel[]>{
-        return this.http.get<BasicModel[]>(this.baseUrl+'clients/filter/' + filteredValue);
+    public filterClientNames(filteredValue : string): Observable<BasicModel[] | ApiResponse> {
+        return this.http.get<BasicModel[] | ApiResponse>(this.baseUrl+'clients/filter/' + filteredValue);
     }
 }

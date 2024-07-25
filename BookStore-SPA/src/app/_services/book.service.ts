@@ -4,6 +4,7 @@ import { Book } from '../_models/Book';
 import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { BasicModel} from '../_models/BasicModel';
+import { ApiResponse } from '../_models/ApiResponse';
 
 @Injectable({
     providedIn: 'root'
@@ -37,7 +38,7 @@ export class BookService {
         return this.http.get<Book[]>(`${this.baseUrl}books/search-book-with-category/${searchedValue}`);
     }
 
-    public filterBookNames(filteredValue: string): Observable<BasicModel[]>{
-        return this.http.get<BasicModel[]>(this.baseUrl + 'books/filter/' + filteredValue);
+    public filterBookNames(filteredValue: string): Observable<BasicModel[] | ApiResponse>{
+        return this.http.get<BasicModel[] | ApiResponse>(this.baseUrl + 'books/filter/' + filteredValue);
     }
 }

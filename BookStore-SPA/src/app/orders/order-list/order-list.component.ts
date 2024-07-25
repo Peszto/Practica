@@ -6,6 +6,7 @@ import { ConfirmationDialogService } from '../../_services/confirmation-dialog.s
 import { OrderService } from '../../_services/order.service';
 import { BookService } from '../../_services/book.service';
 import { ClientService } from '../../_services/client.service';
+import { ApiResponse } from '../../_models/ApiResponse';
 
 @Component({
   selector: 'app-order-list',
@@ -84,12 +85,19 @@ export class OrderListComponent implements OnInit {
       .confirm('Atention', 'Do you really want to delete this order?')
       .then(() =>
         this.service.deleteOrder(orderId).subscribe({
-          next: () => {
-            this.toastr.success('The order has been deleted');
-            this.getValues();
+          next: (response: ApiResponse) => {
+            if (response.success) {
+              this.toastr.success(response.message);
+              this.listComplet.delete(
+                (order: { id: number }) => order.id === orderId
+              );
+              this.orders = this.listComplet;
+            } else {
+              this.toastr.error(response.message);
+            }
           },
-          error: () => {
-            this.toastr.error('Failed to delete the order.');
+          error: (err) => {
+            this.toastr.error(err.error.message);
           },
         })
       )
@@ -110,8 +118,9 @@ export class OrderListComponent implements OnInit {
 
   private search() {
     if (this.searchTerm !== '') {
-      this.orders = this.orders.filter((order: { orderNr: { toString: () => string | string[]; }; }) =>
-        order.orderNr.toString().includes(this.searchTerm)
+      this.orders = this.orders.filter(
+        (order: { orderNr: { toString: () => string | string[] } }) =>
+          order.orderNr.toString().includes(this.searchTerm)
       );
     } else {
       this.service.getOrders().subscribe((orders) => (this.orders = orders));

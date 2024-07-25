@@ -5,7 +5,7 @@ using BookStore.Domain.Models;
 using Microsoft.AspNetCore.Mvc;
 using BookStore.Domain.Interfaces;
 using BookStore.API.Dtos;
-using Bookstore.API.Dtos.Response;
+using BookStore.API.Dtos.Response;
 
 namespace BookStore.API.Controllers
 {
@@ -34,9 +34,15 @@ namespace BookStore.API.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> GetById(int id)
         {
-            var order = await _orderService.GetById(id);
-            if (order == null) return NotFound();
-            return Ok(_mapper.Map<OrderResultDto>(order));
+            try
+            {
+                var order = await _orderService.GetById(id);
+                return Ok(_mapper.Map<OrderResultDto>(order));
+            }
+            catch (Exception ex)
+            {
+                return NotFound(new ApiResponse { Message = ex.Message, Success = false });
+            }
         }
 
         [HttpPost]
@@ -46,16 +52,16 @@ namespace BookStore.API.Controllers
         {
             try
             {
-                if (!ModelState.IsValid) return BadRequest(new ErrorResponseDto { ErrorMessage = "Model is not valid ! " });
+                if (!ModelState.IsValid) return BadRequest(new ApiResponse { Message = "Model is not valid ! ", Success = false });
 
                 var order = _mapper.Map<Orders>(orderDto);
                 var orderResult = await _orderService.Add(order);
 
-                return Ok(new SuccessResponseDto { SuccessMessage = "Order placed successfully!"});
+                return Ok(new ApiResponse { Message = "Order placed successfully!", Success= true });
             }
             catch (Exception ex)
             {
-                return BadRequest(new ErrorResponseDto {  ErrorMessage = ex.Message});
+                return BadRequest(new ApiResponse { Message = ex.Message, Success = false });
             }
 
         }
@@ -67,22 +73,23 @@ namespace BookStore.API.Controllers
         {
             try
             {
-                if (id != orderDto.Id) return BadRequest(new ErrorResponseDto { ErrorMessage = "The order cannot be edited !" });
+                if (id != orderDto.Id) return BadRequest(new ApiResponse { Message = "The order cannot be edited !", Success = false });
 
-                if (!ModelState.IsValid) return BadRequest(new ErrorResponseDto { ErrorMessage = "Model is not valid ! " });
+                if (!ModelState.IsValid) return BadRequest(new ApiResponse { Message = "Model is not valid ! ", Success = false });
 
                 await _orderService.Update(_mapper.Map<Orders>(orderDto));
 
-                return Ok(new SuccessResponseDto { SuccessMessage = "Order updated successfully !"});
+                return Ok(new ApiResponse { Message = "Order updated successfully !", Success = true });
             }
             catch (Exception ex)
             {
-                return BadRequest(new ErrorResponseDto
+                return BadRequest(new ApiResponse
                 {
-                    ErrorMessage = ex.Message
+                    Message = ex.Message,
+                    Success = false
                 });
             }
-            
+
         }
 
         [HttpDelete("{id:int}")]
@@ -90,14 +97,21 @@ namespace BookStore.API.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> Remove(int id)
         {
-            var order = await _orderService.GetById(id);
-            if (order == null) return NotFound();
+            try
+            {
+                var order = await _orderService.GetById(id);
+                if (order == null) return NotFound(new ApiResponse { Message = "The order with the specified id does not exist!", Success = false });
 
-            var result = await _orderService.Remove(order);
+                var result = await _orderService.Remove(order);
 
-            if (!result) return BadRequest();
+                if (!result) return BadRequest(new ApiResponse { Message = "An error occured while deleting the order .", Success = false });
 
-            return Ok();
+                return Ok(new ApiResponse { Message = "Order deleted successfully !", Success = true });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new ApiResponse { Message = ex.Message, Success = false });
+            }
         }
 
         [HttpGet]
@@ -106,9 +120,15 @@ namespace BookStore.API.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> GetClientOrders(int id)
         {
-            var result = await _orderService.GetClientOrders(id);
-            if (result == null) return NotFound();
-            return Ok(_mapper.Map<OrderResultDto>(result));
+            try
+            {
+                var result = await _orderService.GetClientOrders(id);
+                return Ok(_mapper.Map<OrderResultDto>(result));
+            }
+            catch (Exception ex)
+            {
+                return NotFound(new ApiResponse { Message = ex.Message, Success = false });
+            }
         }
 
     }

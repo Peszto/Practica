@@ -13,11 +13,12 @@ import {
 } from 'rxjs/operators';
 import { BookService } from '../../_services/book.service';
 import { ClientService } from '../../_services/client.service';
-import { Observable } from 'rxjs';
+import { Observable, of, OperatorFunction, Subject } from 'rxjs';
 import { error } from 'console';
-import { SuccessResponse } from '../../_models/SuccessResponse';
+import { ApiResponse } from '../../_models/ApiResponse';
 import { Server } from 'http';
 import { Book } from '../../_models/Book';
+import { BasicModel } from '../../_models/BasicModel';
 
 @Component({
   selector: 'app-order',
@@ -30,6 +31,8 @@ export class OrderComponent implements OnInit {
   public books: any;
   public clients: any;
   public selectedBookPrice? : number | null;
+  private bookSearchTerms = new Subject<string>();
+  public model : any;
  
 
   constructor(
@@ -52,7 +55,6 @@ export class OrderComponent implements OnInit {
     if (id != null) {
       this.service.getOrderById(id).subscribe(
         (order) => {
-          console.log(order);
           this.formData = order;
         },
         (err) => {
@@ -76,13 +78,13 @@ export class OrderComponent implements OnInit {
 
   private insertOrder(form: NgForm) {
     this.service.addOrder(form.form.value).subscribe({
-      next: (response: SuccessResponse) => {
+      next: (response: ApiResponse) => {
         if (response.success) {
-          this.toastr.success(response.successMessage);
+          this.toastr.success(response.message);
           this.resetForm(form);
           this.router.navigate(['/orders']);
         } else {
-          this.toastr.error(response.successMessage);
+          this.toastr.error(response.message);
         }
       },
       error: (err) => {
@@ -92,14 +94,14 @@ export class OrderComponent implements OnInit {
   }
 
   private updateOrder(form: NgForm) {
-    this.service.updateOrder(form.form.value.id, form.form.value).subscribe({
-      next: (response: SuccessResponse) => {
+    this.service.updateOrder(this.formData.id, form.form.value).subscribe({
+      next: (response: ApiResponse) => {
         if (response.success) {
-          this.toastr.success(response.successMessage);
+          this.toastr.success(response.message);
           this.resetForm(form);
           this.router.navigate(['/orders']);
         } else {
-          this.toastr.error(response.successMessage);
+          this.toastr.error(response.message);
         }
       },
       error: (err) => {
@@ -127,20 +129,43 @@ export class OrderComponent implements OnInit {
     this.router.navigate(['/orders']);
   }
 
-  searchBooks = (text$: Observable<string>) =>
+  searchBooks: OperatorFunction<string, readonly BasicModel[]> = (text$: Observable<string>) =>
     text$.pipe(
-      debounceTime(300),
+      debounceTime(200),
       distinctUntilChanged(),
-      filter((term: string) => term.length >= 2),
-      switchMap((term) => this.bookService.filterBookNames(term))
+      switchMap((term) =>
+        term.length >= 2 ?
+        this.bookService.filterBookNames(term).pipe(
+          map((response: BasicModel[] | ApiResponse) => {
+            if (Array.isArray(response)) {
+              return response;
+            } else {
+              this.toastr.error(response.message);
+              console.log(response);
+              return [];
+            }
+          })
+        ) : of([])
+      ),
     );
 
-  searchClients = (text$: Observable<string>) =>
+  searchClients: OperatorFunction<string, readonly BasicModel[]> = (text$: Observable<string>) =>
     text$.pipe(
-      debounceTime(300),
+      debounceTime(200),
       distinctUntilChanged(),
-      filter((term: string) => term.length >= 2),
-      switchMap((term) => this.clientService.filterClientNames(term))
+      switchMap((term) =>
+        term.length >= 2 ?
+        this.clientService.filterClientNames(term).pipe(
+          map((response: BasicModel[] | ApiResponse) => {
+            if (Array.isArray(response)) {
+              return response;
+            } else {
+              this.toastr.error(response.message);
+              return [];
+            }
+          }) 
+        ) : of([])
+      )
     );
 
   onBookSelect(event: any) {
@@ -151,9 +176,14 @@ export class OrderComponent implements OnInit {
     })
   }
 
+  onClientSelect(event: any) {
+    this.formData.clientId = event.item;
+  }
+
   onQuantityChange() {
     this.calculateTotalPrice();
   }
+
 
   private calculateTotalPrice() {
     if(!this.formData.quantity || this.formData.quantity <=0){
@@ -164,10 +194,10 @@ export class OrderComponent implements OnInit {
     } 
   }
 
-  onClientSelect(event: any) {
-    this.formData.clientId = event.item;
-  }
 
+
+  // formatter = (result: BasicModel) => result.Name;
   formatter = (x: { name: string }) => x.name;
+
 
 }

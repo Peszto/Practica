@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
-using Bookstore.API.Dtos.Response;
+using BookStore.API.Dtos.Response;
 using BookStore.API.Dtos.Book;
 using BookStore.Domain.Interfaces;
 using BookStore.Domain.Models;
@@ -106,7 +106,7 @@ namespace BookStore.API.Controllers
         {
             var books = _mapper.Map<List<Book>>(await _bookService.Search(bookName));
 
-            if (books == null || books.Count == 0) return NotFound("None book was founded");
+            if (books == null || books.Count == 0) return NotFound("No books were found");
 
             return Ok(books);
         }
@@ -133,8 +133,7 @@ namespace BookStore.API.Controllers
             var caseMatch = _mapper.Map<List<BasicModel>>(await _bookService.FilterByUserInput(filteredValue));
             Console.WriteLine(caseMatch);
 
-
-            if (!caseMatch.Any()) return NotFound(new ErrorResponseDto {  ErrorMessage = "No books match this name!"});
+            if (!caseMatch.Any()) return Ok(new ApiResponse { Message = "No books match this title!" , Success = false});
 
             return Ok(_mapper.Map<IEnumerable<BasicModel>>(caseMatch));
         }

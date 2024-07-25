@@ -14,14 +14,15 @@
         type="text"
         class="form-control"
         name="bookId"
+        [resultFormatter]="formatter"
+        [inputFormatter]="formatter"
         #bookId
         [(ngModel)]="formData.bookId"
         [ngbTypeahead]="searchBooks"
-        [resultFormatter]="formatter"
-        [inputFormatter]="formatter"
         placeholder="Book Title"
         required
         (selectItem)="onBookSelect($event)"
+        
       />
       <div
         class="invalid-feedback"

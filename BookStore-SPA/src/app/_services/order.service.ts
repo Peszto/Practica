@@ -3,7 +3,7 @@ import { environment } from '../../environments/environment';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Order } from '../_models/Order';
-import { SuccessResponse } from '../_models/SuccessResponse';
+import { ApiResponse } from '../_models/ApiResponse';
 @Injectable({
   providedIn: 'root',
 })
@@ -12,12 +12,12 @@ export class OrderService {
 
   constructor(private http: HttpClient) {}
 
-  public addOrder(order: Order): Observable<SuccessResponse> {
-    return this.http.post<SuccessResponse>(`${this.baseUrl}orders`, order);
+  public addOrder(order: Order): Observable<ApiResponse> {
+    return this.http.post<ApiResponse>(`${this.baseUrl}orders`, order);
   }
 
-  public updateOrder(id: number, order: Order): Observable<SuccessResponse> {
-    return this.http.put<SuccessResponse>(this.baseUrl + 'orders/' + id, order);
+  public updateOrder(id: number, order: Order): Observable<ApiResponse> {
+    return this.http.put<ApiResponse>(this.baseUrl + 'orders/' + id, order);
   }
 
   public getOrders(): Observable<Order[]> {
@@ -26,9 +26,10 @@ export class OrderService {
 
   public getOrderById(id: number): Observable<Order> {
     return this.http.get<Order>(this.baseUrl + 'orders/' + id);
+  
   }
 
-  public deleteOrder(id: number) {
-    return this.http.delete(this.baseUrl + 'orders/' + id);
+  public deleteOrder(id: number) : Observable<ApiResponse>{
+    return this.http.delete<ApiResponse>(this.baseUrl + 'orders/' + id);
   }
 }

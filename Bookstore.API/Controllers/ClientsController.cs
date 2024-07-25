@@ -5,6 +5,7 @@ using BookStore.API.Controllers;
 using BookStore.Domain.Models;
 using Microsoft.AspNetCore.Mvc;
 using BookStore.Domain.Services;
+using BookStore.API.Dtos.Response;
 
 namespace BookStore.API.Controllers
 {
@@ -86,10 +87,8 @@ namespace BookStore.API.Controllers
         public async Task<ActionResult<List<BasicModel>>> FilterBookName(string filteredValue)
         {
             var caseMatch = _mapper.Map<List<BasicModel>>(await _clientService.FilterByUserInput(filteredValue));
-            Console.WriteLine(caseMatch);
 
-
-            if (!caseMatch.Any()) return NotFound("No books were found");
+            if (!caseMatch.Any()) return Ok(new ApiResponse { Message = "No clients matching this name were found !", Success=false });
 
             return Ok(_mapper.Map<IEnumerable<BasicModel>>(caseMatch));
         }
