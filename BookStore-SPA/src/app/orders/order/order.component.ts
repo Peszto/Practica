@@ -17,6 +17,7 @@ import { Observable } from 'rxjs';
 import { error } from 'console';
 import { SuccessResponse } from '../../_models/SuccessResponse';
 import { Server } from 'http';
+import { Book } from '../../_models/Book';
 
 @Component({
   selector: 'app-order',
@@ -28,6 +29,8 @@ export class OrderComponent implements OnInit {
   public orders: any;
   public books: any;
   public clients: any;
+  public selectedBookPrice? : number | null;
+ 
 
   constructor(
     public service: OrderService,
@@ -35,7 +38,8 @@ export class OrderComponent implements OnInit {
     private clientService: ClientService,
     private router: Router,
     private route: ActivatedRoute,
-    private toastr: ToastrService
+    private toastr: ToastrService,
+    
   ) {}
 
   ngOnInit() {
@@ -47,8 +51,9 @@ export class OrderComponent implements OnInit {
 
     if (id != null) {
       this.service.getOrderById(id).subscribe(
-        (book) => {
-          this.formData = book;
+        (order) => {
+          console.log(order);
+          this.formData = order;
         },
         (err) => {
           this.toastr.error('An error occurred on get the order.');
@@ -81,7 +86,6 @@ export class OrderComponent implements OnInit {
         }
       },
       error: (err) => {
-
         throw err;
       },
     });
@@ -140,7 +144,24 @@ export class OrderComponent implements OnInit {
     );
 
   onBookSelect(event: any) {
-    this.formData.bookId = event.item;
+    this.bookService.getBookById(event.item.id).subscribe((book)=>{
+      this.selectedBookPrice = book.price;
+      this.formData.bookId = event.item;
+      this.calculateTotalPrice();
+    })
+  }
+
+  onQuantityChange() {
+    this.calculateTotalPrice();
+  }
+
+  private calculateTotalPrice() {
+    if(!this.formData.quantity || this.formData.quantity <=0){
+      this.formData.totalPrice = 0;
+    }
+    else if (this.formData.quantity && this.selectedBookPrice) {
+      this.formData.totalPrice = this.formData.quantity * this.selectedBookPrice;
+    } 
   }
 
   onClientSelect(event: any) {
@@ -148,4 +169,5 @@ export class OrderComponent implements OnInit {
   }
 
   formatter = (x: { name: string }) => x.name;
+
 }

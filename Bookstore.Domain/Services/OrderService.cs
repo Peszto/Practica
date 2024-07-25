@@ -42,6 +42,7 @@ namespace BookStore.Domain.Services
             book.Pieces -= order.Quantity;
 
             order.TotalPrice = order.Quantity * book.Price;
+            order.OrderNr = OrderNumberGenerator();
             await _orderRepository.Add(order);
             await _bookRepository.Update(book);
             return order;
@@ -65,7 +66,6 @@ namespace BookStore.Domain.Services
             }
 
             book.Pieces -= order.Quantity;
-
             order.TotalPrice = order.Quantity * book.Price;
             await _orderRepository.Update(order);
             await _bookRepository.Update(book);
@@ -85,6 +85,13 @@ namespace BookStore.Domain.Services
         public void Dispose()
         {
             _orderRepository?.Dispose();
+        }
+
+        private int OrderNumberGenerator()
+        {
+            Random random = new Random();
+            int orderNumber = random.Next(10000000, 99999999); // Generates a number between 10000000 and 99999999 (inclusive)
+            return orderNumber;
         }
     }
 }
