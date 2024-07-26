@@ -12,7 +12,7 @@ import {
 } from 'rxjs/operators';
 import { BookService } from '../../_services/book.service';
 import { ClientService } from '../../_services/client.service';
-import { Observable, of, OperatorFunction, Subject } from 'rxjs';
+import { Observable, of, OperatorFunction } from 'rxjs';
 import { ApiResponse } from '../../_models/ApiResponse';
 import { BasicModel } from '../../_models/BasicModel';
 
@@ -48,17 +48,23 @@ export class OrderComponent implements OnInit {
     });
 
     if (id != null) {
-      this.service.getOrderById(id).subscribe(
-        (order) => {
-          this.formData = order;
-        },
-        (err) => {
-          this.toastr.error('An error occurred on get the order.');
-        }
-      );
+      this.loadOrderData(id);
     } else {
       this.resetForm();
     }
+  }
+
+  private loadOrderData(id: number){
+    this.service.getOrderById(id).subscribe(
+      (order) => {
+        this.formData = order;
+        console.log(this.formData);
+
+      },
+      (err) => {
+        this.toastr.error('An error occurred on get the order.');
+      }
+    );
   }
 
   public onSubmit(form: NgForm) {
