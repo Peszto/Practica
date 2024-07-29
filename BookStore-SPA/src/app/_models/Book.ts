@@ -1,3 +1,5 @@
+import { BasicModel } from "./BasicModel";
+
 export class Book {
   id: number;
   name: string;
@@ -5,7 +7,7 @@ export class Book {
   description: string;
   price: number | null;
   publishDate: any;
-  categoryId: number | null;
+  categoryId: BasicModel | null;
   pieces: number | null;
 
   constructor(
@@ -15,7 +17,7 @@ export class Book {
     description: string,
     price: number | null,
     publishDate: any,
-    categoryId: number | null,
+    categoryId: BasicModel | null,
     pieces: number | null
   ) {
     this.id = id;

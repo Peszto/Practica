@@ -16,7 +16,7 @@ export class GlobalErrorHandlerService implements ErrorHandler {
     } else {
       // Server-side error
       console.error('Server-side error:', error);
-      toastr.error(error.message);
+      toastr.error(error.error.message);
      
     }
   }

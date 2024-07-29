@@ -4,6 +4,7 @@ import { Category } from '../_models/Category';
 import { filter, Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { BasicModel } from '../_models/BasicModel';
+import { ApiResponse } from '../_models/ApiResponse';
 
 @Injectable({
   providedIn: 'root',
@@ -13,8 +14,8 @@ export class CategoryService {
 
   constructor(private http: HttpClient) {}
 
-  public addCategory(category: Category) {
-    return this.http.post(this.baseUrl + 'categories', category);
+  public addCategory(category: Category) : Observable<ApiResponse> {
+    return this.http.post<ApiResponse>(this.baseUrl + 'categories', category);
   }
 
   public updateCategory(id: number, category: Category) {
@@ -25,8 +26,8 @@ export class CategoryService {
     return this.http.get<Category[]>(this.baseUrl + `categories`);
   }
 
-  public deleteCategory(id: number) {
-    return this.http.delete(this.baseUrl + 'categories/' + id);
+  public deleteCategory(id: number) : Observable<ApiResponse> {
+    return this.http.delete<ApiResponse>(this.baseUrl + 'categories/' + id);
   }
 
   public getCategoryById(id: any): Observable<Category> {

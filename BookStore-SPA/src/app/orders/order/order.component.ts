@@ -93,7 +93,6 @@ export class OrderComponent implements OnInit {
   }
 
   private insertOrder(form: NgForm) {
-    console.log("form value", form.form.value);
     this.service.addOrder(form.form.value).subscribe({
       next: (response: ApiResponse) => {
         if (response.success) {

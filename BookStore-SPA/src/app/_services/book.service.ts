@@ -26,8 +26,8 @@ export class BookService {
         return this.http.get<Book[]>(this.baseUrl + `books`);
     }
 
-    public deleteBook(id: number) {
-        return this.http.delete(this.baseUrl + 'books/' + id);
+    public deleteBook(id: number) : Observable<ApiResponse> {
+        return this.http.delete<ApiResponse>(this.baseUrl + 'books/' + id);
     }
 
     public getBookById(id: any): Observable<Book> {

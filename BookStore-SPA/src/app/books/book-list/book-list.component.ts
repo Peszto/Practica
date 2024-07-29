@@ -6,6 +6,8 @@ import { ConfirmationDialogService } from '../../_services/confirmation-dialog.s
 import { Subject } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
 import { CategoryService } from '../../_services/category.service';
+import { Book } from '../../_models/Book';
+import { ApiResponse } from '../../_models/ApiResponse';
 
 @Component({
   selector: 'app-book-list',
@@ -13,8 +15,8 @@ import { CategoryService } from '../../_services/category.service';
   styleUrls: ['./book-list.component.css'],
 })
 export class BookListComponent implements OnInit {
-  public books: any;
-  public listComplet: any;
+  public books!: Book[];
+  public listComplet!: Book[];
   public searchTerm!: string;
   public searchValueChanged: Subject<string> = new Subject<string>();
   public categories: any[] = [];
@@ -74,9 +76,17 @@ export class BookListComponent implements OnInit {
       .confirm('Atention', 'Do you really want to delete this book?')
       .then(() =>
         this.service.deleteBook(bookId).subscribe({
-          next: () => {
-            this.toastr.success('The book has been deleted');
-            this.getValues();
+          next: (response: ApiResponse) => {
+            if(response.success)
+            {
+              this.toastr.success(response.message);
+              this.books = this.books.filter(book => book.id != bookId);
+              this.listComplet = this.books
+            }
+            else
+            { 
+              this.toastr.error(response.message);
+            }
           },
           error: () => {
             this.toastr.error('Failed to delete the book.');

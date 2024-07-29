@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
 using BookStore.API.Dtos.Category;
+using BookStore.API.Dtos.Response;
 using BookStore.Domain.Interfaces;
 using BookStore.Domain.Models;
 using BookStore.Domain.Services;
@@ -46,14 +47,23 @@ namespace BookStore.API.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Add(CategoryAddDto categoryDto)
         {
-            if (!ModelState.IsValid) return BadRequest();
+            try
+            {
+                if (!ModelState.IsValid) return BadRequest(new ApiResponse { Message= "Model is not valid", Success = false});
 
-            var category = _mapper.Map<Category>(categoryDto);
-            var categoryResult = await _categoryService.Add(category);
+                var category = _mapper.Map<Category>(categoryDto);
+                var categoryResult = await _categoryService.Add(category);
 
-            if (categoryResult == null) return BadRequest();
+                if (categoryResult == null) return BadRequest(new ApiResponse { Message= "Something went wrong during insertion! ", Success=false});
 
-            return Ok(_mapper.Map<CategoryResultDto>(categoryResult));
+                //return Ok(_mapper.Map<CategoryResultDto>(categoryResult));
+                return Ok(new ApiResponse { Message = "Category added successfully!", Success = true });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new ApiResponse {  Message = ex.Message, Success = false});
+            }
+          
         }
 
         [HttpPut("{id:int}")]
@@ -75,14 +85,22 @@ namespace BookStore.API.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> Remove(int id)
         {
-            var category = await _categoryService.GetById(id);
-            if (category == null) return NotFound();
+            try
+            {
+                var category = await _categoryService.GetById(id);
+                if (category == null) return NotFound(new ApiResponse { Message = "Category could not be found!", Success = false });
 
-            var result = await _categoryService.Remove(category);
+                var result = await _categoryService.Remove(category);
 
-            if (!result) return BadRequest();
+                if (!result) return BadRequest(new ApiResponse { Message= "Category cannot be removed!", Success = false});
 
-            return Ok();
+                return Ok(new ApiResponse { Message = "Category deleted successfull!", Success = true });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new ApiResponse { Message = ex.Message, Success = false});
+            }
+           
         }
 
         [HttpGet]

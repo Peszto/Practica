@@ -5,6 +5,7 @@ import { ToastrService } from 'ngx-toastr';
 import { ConfirmationDialogService } from '../../_services/confirmation-dialog.service';
 import { Subject } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
+import { ApiResponse } from '../../_models/ApiResponse';
 
 @Component({
   selector: 'app-category-list',
@@ -50,12 +51,19 @@ export class CategoryListComponent implements OnInit {
       .confirm('Atention', 'Do you really want to delete this category?')
       .then(() =>
         this.service.deleteCategory(categoryId).subscribe({
-          next: () => {
-            this.toastr.success('The category has been deleted');
-            this.getCategories();
+          next: (response: ApiResponse) => {
+            if(response.success)
+            {
+              this.toastr.success(response.message);
+              this.getCategories();
+            }
+            else
+            {
+              this.toastr.error(response.message);
+            }
           },
-          error: (error) => {
-            this.toastr.error('Failed to delete the category. There are multiple books in this category.');
+          error: (err) => {
+            throw err;
           },
         })
       )

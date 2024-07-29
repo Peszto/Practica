@@ -5,6 +5,7 @@ import { NgForm } from '@angular/forms';
 import { Category } from '../../_models/Category';
 import { ToastrService } from 'ngx-toastr';
 import { CategoryService } from '../../_services/category.service';
+import { ApiResponse } from '../../_models/ApiResponse';
 
 @Component({
   selector: 'app-category',
@@ -58,12 +59,21 @@ export class CategoryComponent implements OnInit {
   }
 
   public insertRecord(form: NgForm) {
-    this.service.addCategory(form.form.value).subscribe(() => {
-      this.toastr.success('Registration successful');
-      this.resetForm(form);
-      this.router.navigate(['/categories']);
-    }, () => {
-      this.toastr.error('An error occurred on insert the record.');
+    this.service.addCategory(form.form.value).subscribe({
+      next: (response: ApiResponse) => {
+        if (response.success){
+          this.toastr.success(response.message);
+          this.resetForm(form);
+          this.router.navigate(['/categories']);
+        }
+        else
+        {
+          this.toastr.error(response.message);
+        }
+      },
+      error: (err) =>{
+        throw err;
+      },
     });
   }
 
