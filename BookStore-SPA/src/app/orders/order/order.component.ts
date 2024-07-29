@@ -63,6 +63,7 @@ export class OrderComponent implements OnInit {
         if(this.formData.bookId?.id != null && this.formData.clientId?.id!= null){
           this.isBookNameValid =true;
           this.isClientNameValid = true;
+          this.selectedBookPrice = this.formData.totalPrice/this.formData.quantity!;
         }
         console.log(this.formData.bookId);
         console.log(this.isBookNameValid);
@@ -206,11 +207,13 @@ export class OrderComponent implements OnInit {
   }
 
   onQuantityChange() {
+    console.log("price changed");
     this.calculateTotalPrice();
   }
 
 
   private calculateTotalPrice() {
+    console.log(this.formData.quantity);
     if(!this.formData.quantity || this.formData.quantity <=0){
       this.formData.totalPrice = 0;
     }
