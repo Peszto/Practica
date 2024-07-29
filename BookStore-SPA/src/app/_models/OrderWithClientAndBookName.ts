@@ -1,6 +1,6 @@
 import { BasicModel } from "./BasicModel";
 
-export class OrderTest {
+export class OrderWithClientAndBookName {
     id :number;
     clientId : BasicModel | null;
     bookId: BasicModel | null;

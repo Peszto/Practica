@@ -15,7 +15,7 @@ import { ClientService } from '../../_services/client.service';
 import { Observable, of, OperatorFunction } from 'rxjs';
 import { ApiResponse } from '../../_models/ApiResponse';
 import { BasicModel } from '../../_models/BasicModel';
-import { OrderTest } from '../../_models/OrderTest';
+import { OrderWithClientAndBookName } from '../../_models/OrderWithClientAndBookName';
 
 @Component({
   selector: 'app-order',
@@ -23,8 +23,8 @@ import { OrderTest } from '../../_models/OrderTest';
   styleUrl: './order.component.css',
 })
 export class OrderComponent implements OnInit {
-  public formData!: OrderTest;
-  public formDataTest!:OrderTest;
+  public formData!: OrderWithClientAndBookName;
+  public formDataTest!:OrderWithClientAndBookName;
   public orders: any;
   public books: any;
   public clients: any;
@@ -60,14 +60,12 @@ export class OrderComponent implements OnInit {
     this.service.getOrderById(id).subscribe(
       (order) => {
         this.formData = order;
+        console.log(this.formData);
         if(this.formData.bookId?.id != null && this.formData.clientId?.id!= null){
           this.isBookNameValid =true;
           this.isClientNameValid = true;
           this.selectedBookPrice = this.formData.totalPrice/this.formData.quantity!;
         }
-        console.log(this.formData.bookId);
-        console.log(this.isBookNameValid);
-        console.log(this.formData);
       },
       (err) => {
         this.toastr.error('An error occurred on get the order.');
@@ -98,7 +96,6 @@ export class OrderComponent implements OnInit {
   }
 
   private insertOrder(form: NgForm) {
-    console.log(form.form.value);
     this.service.addOrder(form.form.value).subscribe({
       next: (response: ApiResponse) => {
         if (response.success) {
@@ -110,7 +107,7 @@ export class OrderComponent implements OnInit {
         }
       },
       error: (err) => {
-        //throw err;
+        throw err;
       },
     });
   }
@@ -127,7 +124,7 @@ export class OrderComponent implements OnInit {
         }
       },
       error: (err) => {
-        this.toastr.error('An error occured on update of the order.');
+        throw err;
       },
     });
   }
@@ -207,7 +204,6 @@ export class OrderComponent implements OnInit {
   }
 
   onQuantityChange() {
-    console.log("price changed");
     this.calculateTotalPrice();
   }
 

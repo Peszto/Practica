@@ -27,8 +27,35 @@ namespace BookStore.API.Controllers
         public async Task<IActionResult> GetAll()
         {
             var orders = await _orderService.GetAll();
-            Console.WriteLine(orders);
-            return Ok(_mapper.Map<IEnumerable<OrderResultDto>>(orders));
+            var result = new List<OrderTestResultDto>();
+            for(var i=0; i<orders.Count(); ++i)
+            {
+                var partialResult = ConvertDataToOrderTestResult(orders.ElementAt(i));
+                result.Add(partialResult);
+
+            }
+            return Ok(result);
+        }
+
+        private OrderTestResultDto ConvertDataToOrderTestResult(Orders dbOrder)
+        {
+            var result = new OrderTestResultDto();
+            result.Id = dbOrder.Id;
+            result.BookId = new BasicModel()
+            {
+                Id = dbOrder.Book.Id,
+                Name  = dbOrder.Book.Name
+            };
+            result.ClientId = new BasicModel()
+            {
+                Id = dbOrder.Client.Id,
+                Name = dbOrder.Client.FirstName + " " + dbOrder.Client.LastName
+            };
+            result.OrderNr = dbOrder.OrderNr;
+            result.Quantity = dbOrder.Quantity;
+            result.TotalPrice = dbOrder.TotalPrice;
+
+            return result;
         }
 
         [HttpGet("{id:int}")]
@@ -38,21 +65,7 @@ namespace BookStore.API.Controllers
             try
             {
                 var dbOrder = await _orderService.GetById(id);
-                var result = new OrderTestResultDto();
-                result.Id = dbOrder.Id;
-                result.BookId = new BasicModel()
-                {
-                    Id = dbOrder.Book.Id,
-                    Name  = dbOrder.Book.Name
-                };
-                result.ClientId = new BasicModel()
-                {
-                    Id = dbOrder.Client.Id,
-                    Name = dbOrder.Client.FirstName + " " + dbOrder.Client.LastName
-                };
-                result.OrderNr = dbOrder.OrderNr;
-                result.Quantity = dbOrder.Quantity;
-                result.TotalPrice = dbOrder.TotalPrice;
+                var result = ConvertDataToOrderTestResult(dbOrder);
                 return Ok(result);
                 //return Ok(_mapper.Map<IEnumerable<OrderResultDto>>(dbOrder));
             }

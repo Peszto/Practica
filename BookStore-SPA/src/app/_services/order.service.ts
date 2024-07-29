@@ -4,7 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Order } from '../_models/Order';
 import { ApiResponse } from '../_models/ApiResponse';
-import { OrderTest } from '../_models/OrderTest';
+import { OrderWithClientAndBookName } from '../_models/OrderWithClientAndBookName';
 @Injectable({
   providedIn: 'root',
 })
@@ -21,13 +21,12 @@ export class OrderService {
     return this.http.put<ApiResponse>(this.baseUrl + 'orders/' + id, order);
   }
 
-  public getOrders(): Observable<Order[]> {
-    return this.http.get<Order[]>(this.baseUrl + 'orders');
+  public getOrders(): Observable<OrderWithClientAndBookName[]> {
+    return this.http.get<OrderWithClientAndBookName[]>(this.baseUrl + 'orders');
   }
 
-  public getOrderById(id: number): Observable<OrderTest> {
-    return this.http.get<OrderTest>(this.baseUrl + 'orders/' + id);
-  
+  public getOrderById(id: number): Observable<OrderWithClientAndBookName> {
+    return this.http.get<OrderWithClientAndBookName>(this.baseUrl + 'orders/' + id);
   }
 
   public deleteOrder(id: number) : Observable<ApiResponse>{

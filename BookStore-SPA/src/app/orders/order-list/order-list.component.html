@@ -32,8 +32,8 @@
         <tbody>
             <tr *ngFor="let order of orders">
                 <td>{{order.orderNr}}</td>
-                <td>{{order.clientName}}</td>
-                <td>{{order.bookName}}</td>
+                <td>{{order.clientId?.name}}</td>
+                <td>{{order.bookId?.name}}</td>
                 <td>{{order.quantity}}</td>
                 <td>{{order.totalPrice | currency}}</td>
                 <td class="action-button-column">

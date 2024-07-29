@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -29,16 +30,14 @@ namespace BookStore.Domain.Services
         public async Task<Orders> Add(Orders order)
         {
             Book book = await _bookRepository.GetById(order.BookId);
-            if (order.Quantity <=0)
-            {
+            if (!IsOrderQuantityPositiveNumber(order.Quantity)){
                 throw new Exception("Quantity has to be greater than 0 !");
             }
-            
-            if(book.Pieces < order.Quantity)
+            if (!IsOrderQuantityValid(book.Pieces,order.Quantity, int.MaxValue))
             {
                 throw new Exception("There are not enough pieces of books !");
             }
-
+            
             book.Pieces -= order.Quantity;
 
             order.TotalPrice = order.Quantity * book.Price;
@@ -48,28 +47,56 @@ namespace BookStore.Domain.Services
             await _bookRepository.Update(book);
             return order;
         }
-        public async Task<Orders> Update(Orders order)
+
+        private bool IsOrderQuantityPositiveNumber(int requestedQuantity)
         {
-            if (_orderRepository.Search(o => o.OrderNr == order.OrderNr
+            return requestedQuantity > 0;
+        }
+        private bool IsOrderQuantityValid(int pieces, int requestedQuantity, int oldQuantity)
+        {
+            return pieces >= requestedQuantity || requestedQuantity<=oldQuantity;
+        }
+
+        private bool IsOrderExisting(Orders order)
+        {
+            return _orderRepository.Search(o => o.OrderNr == order.OrderNr
             && o.TotalPrice == order.TotalPrice
             && o.Quantity == order.Quantity
             && o.ClientId == order.ClientId
             && o.BookId == order.BookId
             && o.OrderNr ==order.OrderNr
             && o.Id != order.Id
-            ).Result.Any())
-                throw new Exception("The order you are trying to edit does not exist!");
-
+            ).Result.Any();
+        }
+        public async Task<Orders> Update(Orders order)
+        {
             Book book = await _bookRepository.GetById(order.BookId);
-            //if(order.Quantity > newOrder.Quantity)
-            //{
-            //    book.Pieces += order.Quantity - newOrder.Quantity;
-            //}
-            //else if(book.Pieces - order.Quantity + newOrder.Quantity >=0 ) 
-            //{
-            //    book.Pieces -= (order.Quantity - newOrder.Quantity);
-            //}
-         
+            Orders oldOrder = await _orderRepository.GetById(order.Id);
+
+            if (!IsOrderQuantityPositiveNumber(order.Quantity))
+            {
+                throw new Exception("Quantity has to be greater than 0 !");
+            }
+            if (!IsOrderQuantityValid(book.Pieces, order.Quantity, oldOrder.Quantity))
+            {
+                throw new Exception("There are not enough pieces of books !");
+            }
+            if(!IsOrderExisting(order))
+            {
+                throw new Exception("The order you are trying to edit does not exist!");
+            }                
+
+            
+
+            if (oldOrder.Quantity > order.Quantity)
+            {
+                book.Pieces += oldOrder.Quantity - order.Quantity;
+            }
+            else if (book.Pieces - oldOrder.Quantity + order.Quantity >=0)
+            {
+                book.Pieces -= (order.Quantity - oldOrder.Quantity);
+            }
+
 
             order.TotalPrice = order.Quantity * book.Price;
             await _orderRepository.Update(order);
@@ -96,7 +123,7 @@ namespace BookStore.Domain.Services
         private int OrderNumberGenerator()
         {
             Random random = new Random();
-            int orderNumber = random.Next(10000000, 99999999); // Generates a number between 10000000 and 99999999 (inclusive)
+            int orderNumber = random.Next(1000000, 9999999); 
             return orderNumber;
         }
     }
