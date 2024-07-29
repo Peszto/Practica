@@ -1,12 +1,12 @@
 export class BasicModel{
-    Id : number;
-    Name: string;
+    id : number;
+    name: string;
     constructor(
-        Id : number,
-        Name: string
+        id : number,
+        name: string
     )
     {
-        this.Name = Name;
-        this.Id = Id;
+        this.name = name;
+        this.id = id;
     }
 }

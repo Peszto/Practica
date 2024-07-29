@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using BookStore.Domain.Interfaces;
 using BookStore.API.Dtos;
 using BookStore.API.Dtos.Response;
+using Bookstore.API.Dtos.Order;
 
 namespace BookStore.API.Controllers
 {
@@ -36,8 +37,24 @@ namespace BookStore.API.Controllers
         {
             try
             {
-                var order = await _orderService.GetById(id);
-                return Ok(_mapper.Map<OrderResultDto>(order));
+                var dbOrder = await _orderService.GetById(id);
+                var result = new OrderTestResultDto();
+                result.Id = dbOrder.Id;
+                result.BookId = new BasicModel()
+                {
+                    Id = dbOrder.Book.Id,
+                    Name  = dbOrder.Book.Name
+                };
+                result.ClientId = new BasicModel()
+                {
+                    Id = dbOrder.Client.Id,
+                    Name = dbOrder.Client.FirstName + " " + dbOrder.Client.LastName
+                };
+                result.OrderNr = dbOrder.OrderNr;
+                result.Quantity = dbOrder.Quantity;
+                result.TotalPrice = dbOrder.TotalPrice;
+                return Ok(result);
+                //return Ok(_mapper.Map<IEnumerable<OrderResultDto>>(dbOrder));
             }
             catch (Exception ex)
             {

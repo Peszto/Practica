@@ -4,6 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Order } from '../_models/Order';
 import { ApiResponse } from '../_models/ApiResponse';
+import { OrderTest } from '../_models/OrderTest';
 @Injectable({
   providedIn: 'root',
 })
@@ -24,8 +25,8 @@ export class OrderService {
     return this.http.get<Order[]>(this.baseUrl + 'orders');
   }
 
-  public getOrderById(id: number): Observable<Order> {
-    return this.http.get<Order>(this.baseUrl + 'orders/' + id);
+  public getOrderById(id: number): Observable<OrderTest> {
+    return this.http.get<OrderTest>(this.baseUrl + 'orders/' + id);
   
   }
 

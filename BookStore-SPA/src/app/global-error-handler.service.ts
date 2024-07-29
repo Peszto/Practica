@@ -9,14 +9,14 @@ export class GlobalErrorHandlerService implements ErrorHandler {
   handleError(error: any): void {
     const toastr = this.injector.get(ToastrService);
 
-    if (error.error instanceof ErrorEvent) {
+    if (error.error instanceof HttpErrorResponse) {
       // Client-side or network error
-      console.error('Client-side error:', error.error.message);
-      toastr.error(error.error.message);
+      console.error('Client-side error:', error.message);
+      toastr.error(error.message);
     } else {
       // Server-side error
       console.error('Server-side error:', error);
-      toastr.error(error.error.message);
+      toastr.error(error.message);
      
     }
   }

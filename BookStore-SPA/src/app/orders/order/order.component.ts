@@ -15,6 +15,7 @@ import { ClientService } from '../../_services/client.service';
 import { Observable, of, OperatorFunction } from 'rxjs';
 import { ApiResponse } from '../../_models/ApiResponse';
 import { BasicModel } from '../../_models/BasicModel';
+import { OrderTest } from '../../_models/OrderTest';
 
 @Component({
   selector: 'app-order',
@@ -22,7 +23,8 @@ import { BasicModel } from '../../_models/BasicModel';
   styleUrl: './order.component.css',
 })
 export class OrderComponent implements OnInit {
-  public formData!: Order;
+  public formData!: OrderTest;
+  public formDataTest!:OrderTest;
   public orders: any;
   public books: any;
   public clients: any;
@@ -58,8 +60,13 @@ export class OrderComponent implements OnInit {
     this.service.getOrderById(id).subscribe(
       (order) => {
         this.formData = order;
+        if(this.formData.bookId?.id != null && this.formData.clientId?.id!= null){
+          this.isBookNameValid =true;
+          this.isClientNameValid = true;
+        }
+        console.log(this.formData.bookId);
+        console.log(this.isBookNameValid);
         console.log(this.formData);
-
       },
       (err) => {
         this.toastr.error('An error occurred on get the order.');
@@ -68,12 +75,17 @@ export class OrderComponent implements OnInit {
   }
 
   public onSubmit(form: NgForm) {
+    console.log(form.valid);
+    console.log(this.isBookNameValid);
+    console.log(this.isClientNameValid);
     if(form.valid && this.isBookNameValid && this.isClientNameValid){
       if (form.value.id === 0) {
         form.value.bookId = form.value.bookId.id;
         form.value.clientId = form.value.clientId.id;
         this.insertOrder(form);
       } else {
+        form.value.bookId = form.value.bookId.id;
+        form.value.clientId = form.value.clientId.id;
         this.updateOrder(form);
       }
     }
@@ -85,6 +97,7 @@ export class OrderComponent implements OnInit {
   }
 
   private insertOrder(form: NgForm) {
+    console.log(form.form.value);
     this.service.addOrder(form.form.value).subscribe({
       next: (response: ApiResponse) => {
         if (response.success) {
@@ -96,7 +109,7 @@ export class OrderComponent implements OnInit {
         }
       },
       error: (err) => {
-        throw err;
+        //throw err;
       },
     });
   }
@@ -189,6 +202,7 @@ export class OrderComponent implements OnInit {
 
   onClientSelect(event: any) {
     this.formData.clientId = event.item;
+    console.log(this.formData.clientId);
   }
 
   onQuantityChange() {
@@ -207,7 +221,7 @@ export class OrderComponent implements OnInit {
 
 
 
-  // formatter = (result: BasicModel) => result.Name;
+  //formatter = (result: BasicModel) => result.Name;
   formatter = (x: { name: string }) => x.name;
 
 

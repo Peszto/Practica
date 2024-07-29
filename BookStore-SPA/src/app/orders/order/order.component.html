@@ -14,9 +14,9 @@
         type="text"
         class="form-control"
         name="bookId"
+        #bookId
         [resultFormatter]="formatter"
         [inputFormatter]="formatter"
-        #bookId
         [(ngModel)]="formData.bookId"
         [ngbTypeahead]="searchBooks"
         placeholder="Book Title"
@@ -64,7 +64,7 @@
       <input
         type="number"
         name="quantity"
-        #quantity="ngModel"
+        #quantity="ngModel"z
         [(ngModel)]="formData.quantity"
         class="form-control"
         required
