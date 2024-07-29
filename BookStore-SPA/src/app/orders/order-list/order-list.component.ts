@@ -33,7 +33,6 @@ export class OrderListComponent implements OnInit {
 
   ngOnInit() {
     this.getValues();
-
     this.searchValueChanged.pipe(debounceTime(1000)).subscribe(() => {
       this.search();
     });
@@ -43,11 +42,11 @@ export class OrderListComponent implements OnInit {
     this.service.getOrders().subscribe((orders) => {
       this.orders = orders;
       this.listComplet = orders;
+      console.log(orders.length);
     });
   }
 
   public deleteOrder(orderId: number) {
-    console.log(orderId);
     this.confirmationDialogService
       .confirm('Atention', 'Do you really want to delete this order?')
       .then(() =>
@@ -55,7 +54,7 @@ export class OrderListComponent implements OnInit {
           next: (response: ApiResponse) => {
             if (response.success) {
               this.toastr.success(response.message);
-              this.listComplet.filter((order:any)=>{ order.id != orderId});
+              this.listComplet = this.listComplet.filter((order:any)=>{ order.id !== orderId});
               this.orders = this.listComplet;
             } else {
               this.toastr.error(response.message);

@@ -60,12 +60,9 @@ namespace BookStore.Domain.Services
         private bool IsOrderExisting(Orders order)
         {
             return _orderRepository.Search(o => o.OrderNr == order.OrderNr
-            && o.TotalPrice == order.TotalPrice
-            && o.Quantity == order.Quantity
             && o.ClientId == order.ClientId
             && o.BookId == order.BookId
-            && o.OrderNr ==order.OrderNr
-            && o.Id != order.Id
+            && o.Id == order.Id
             ).Result.Any();
         }
         public async Task<Orders> Update(Orders order)
@@ -106,6 +103,8 @@ namespace BookStore.Domain.Services
 
         public async Task<bool> Remove(Orders order)
         {
+            order.Book.Pieces += order.Quantity;
+            await _bookRepository.Update(order.Book);
             await _orderRepository.Remove(order);
             return true;
         }

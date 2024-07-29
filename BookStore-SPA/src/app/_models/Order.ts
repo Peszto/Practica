@@ -10,7 +10,6 @@ export class Order {
         clientId : number | null,
         bookId: number | null,
         quantity: number | null,
-        orderNr: number | null,
         totalPrice: number
     )
     {
@@ -18,7 +17,7 @@ export class Order {
         this.clientId = clientId;
         this.id = id;
         this.quantity = quantity;
-        this.orderNr = orderNr;
+        this.orderNr = -1;
         this.totalPrice = totalPrice;
     }
 }

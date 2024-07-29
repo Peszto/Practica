@@ -60,7 +60,6 @@ export class OrderComponent implements OnInit {
     this.service.getOrderById(id).subscribe(
       (order) => {
         this.formData = order;
-        console.log(this.formData);
         if(this.formData.bookId?.id != null && this.formData.clientId?.id!= null){
           this.isBookNameValid =true;
           this.isClientNameValid = true;
@@ -74,11 +73,9 @@ export class OrderComponent implements OnInit {
   }
 
   public onSubmit(form: NgForm) {
-    console.log(form.valid);
-    console.log(this.isBookNameValid);
-    console.log(this.isClientNameValid);
+   
     if(form.valid && this.isBookNameValid && this.isClientNameValid){
-      if (form.value.id === 0) {
+      if (form.value.id === 0) {  
         form.value.bookId = form.value.bookId.id;
         form.value.clientId = form.value.clientId.id;
         this.insertOrder(form);
@@ -96,6 +93,7 @@ export class OrderComponent implements OnInit {
   }
 
   private insertOrder(form: NgForm) {
+    console.log("form value", form.form.value);
     this.service.addOrder(form.form.value).subscribe({
       next: (response: ApiResponse) => {
         if (response.success) {
@@ -139,7 +137,7 @@ export class OrderComponent implements OnInit {
       clientId: null,
       bookId: null,
       quantity: null,
-      orderNr: null,
+      orderNr: -1,
       totalPrice: 0,
     };
   }
@@ -200,7 +198,6 @@ export class OrderComponent implements OnInit {
 
   onClientSelect(event: any) {
     this.formData.clientId = event.item;
-    console.log(this.formData.clientId);
   }
 
   onQuantityChange() {
@@ -209,7 +206,6 @@ export class OrderComponent implements OnInit {
 
 
   private calculateTotalPrice() {
-    console.log(this.formData.quantity);
     if(!this.formData.quantity || this.formData.quantity <=0){
       this.formData.totalPrice = 0;
     }

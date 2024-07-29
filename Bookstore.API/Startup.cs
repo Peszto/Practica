@@ -21,7 +21,8 @@ namespace BookStore.API
             services.AddDbContext<BookStoreDbContext>(options =>
            {
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
-            });
+                options.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
+           });
 
             services.AddCors();
 
