@@ -24,12 +24,12 @@ import { OrderWithClientAndBookName } from '../../_models/OrderWithClientAndBook
 })
 export class OrderComponent implements OnInit {
   public formData!: OrderWithClientAndBookName;
-  public formDataTest!:OrderWithClientAndBookName;
+  public formDataTest!: OrderWithClientAndBookName;
   public orders: any;
   public books: any;
   public clients: any;
-  public selectedBookPrice? : number | null;
-  public isBookNameValid : boolean = false;
+  public selectedBookPrice?: number | null;
+  public isBookNameValid: boolean = false;
   public isClientNameValid: boolean = false;
 
   constructor(
@@ -38,8 +38,7 @@ export class OrderComponent implements OnInit {
     private clientService: ClientService,
     private router: Router,
     private route: ActivatedRoute,
-    private toastr: ToastrService,
-    
+    private toastr: ToastrService
   ) {}
 
   ngOnInit() {
@@ -56,40 +55,38 @@ export class OrderComponent implements OnInit {
     }
   }
 
-  private loadOrderData(id: number){
+  private loadOrderData(id: number) {
     this.service.getOrderById(id).subscribe(
       (order) => {
         this.formData = order;
-        if(this.formData.bookId?.id != null && this.formData.clientId?.id!= null){
-          this.isBookNameValid =true;
+        if (
+          this.formData.bookId?.id != null &&
+          this.formData.clientId?.id != null
+        ) {
+          this.isBookNameValid = true;
           this.isClientNameValid = true;
-          this.selectedBookPrice = this.formData.totalPrice/this.formData.quantity!;
+          this.selectedBookPrice =
+            this.formData.totalPrice / this.formData.quantity!;
         }
       },
       (err) => {
-        this.toastr.error('An error occurred on get the order.');
+        throw err;
       }
     );
   }
 
   public onSubmit(form: NgForm) {
-   
-    if(form.valid && this.isBookNameValid && this.isClientNameValid){
-      if (form.value.id === 0) {  
-        form.value.bookId = form.value.bookId.id;
-        form.value.clientId = form.value.clientId.id;
+    if (form.valid && this.isBookNameValid && this.isClientNameValid) {
+      form.value.bookId = form.value.bookId.id;
+      form.value.clientId = form.value.clientId.id;
+      if (form.value.id === 0) {
         this.insertOrder(form);
       } else {
-        form.value.bookId = form.value.bookId.id;
-        form.value.clientId = form.value.clientId.id;
         this.updateOrder(form);
       }
-    }
-    else
-    {
+    } else {
       this.toastr.error('Please ensure all fields are filled out correctly !');
     }
-    
   }
 
   private insertOrder(form: NgForm) {
@@ -145,54 +142,60 @@ export class OrderComponent implements OnInit {
     this.router.navigate(['/orders']);
   }
 
-  searchBooks: OperatorFunction<string, readonly BasicModel[]> = (text$: Observable<string>) =>
+  searchBooks: OperatorFunction<string, readonly BasicModel[]> = (
+    text$: Observable<string>
+  ) =>
     text$.pipe(
       debounceTime(200),
       distinctUntilChanged(),
       switchMap((term) =>
-        term.length >= 2 ?
-        this.bookService.filterBookNames(term).pipe(
-          map((response: BasicModel[] | ApiResponse) => {
-            if (Array.isArray(response)) {
-              this.isBookNameValid = true;
-              return response;
-            } else {
-              this.toastr.error(response.message);
-              this.isBookNameValid = false;
-              return [];
-            }
-          })
-        ) : of([])
-      ),
+        term.length >= 2
+          ? this.bookService.filterBookNames(term).pipe(
+              map((response: BasicModel[] | ApiResponse) => {
+                if (Array.isArray(response)) {
+                  this.isBookNameValid = true;
+                  return response;
+                } else {
+                  this.toastr.error(response.message);
+                  this.isBookNameValid = false;
+                  return [];
+                }
+              })
+            )
+          : of([])
+      )
     );
 
-  searchClients: OperatorFunction<string, readonly BasicModel[]> = (text$: Observable<string>) =>
+  searchClients: OperatorFunction<string, readonly BasicModel[]> = (
+    text$: Observable<string>
+  ) =>
     text$.pipe(
       debounceTime(200),
       distinctUntilChanged(),
       switchMap((term) =>
-        term.length >= 2 ?
-        this.clientService.filterClientNames(term).pipe(
-          map((response: BasicModel[] | ApiResponse) => {
-            if (Array.isArray(response)) {
-              this.isClientNameValid = true;
-              return response;
-            } else {
-              this.toastr.error(response.message);
-              this.isClientNameValid = false;
-              return [];
-            }
-          }) 
-        ) : of([])
+        term.length >= 2
+          ? this.clientService.filterClientNames(term).pipe(
+              map((response: BasicModel[] | ApiResponse) => {
+                if (Array.isArray(response)) {
+                  this.isClientNameValid = true;
+                  return response;
+                } else {
+                  this.toastr.error(response.message);
+                  this.isClientNameValid = false;
+                  return [];
+                }
+              })
+            )
+          : of([])
       )
     );
 
   onBookSelect(event: any) {
-    this.bookService.getBookById(event.item.id).subscribe((book)=>{
+    this.bookService.getBookById(event.item.id).subscribe((book) => {
       this.selectedBookPrice = book.price;
       this.formData.bookId = event.item;
       this.calculateTotalPrice();
-    })
+    });
   }
 
   onClientSelect(event: any) {
@@ -203,20 +206,15 @@ export class OrderComponent implements OnInit {
     this.calculateTotalPrice();
   }
 
-
   private calculateTotalPrice() {
-    if(!this.formData.quantity || this.formData.quantity <=0){
+    if (!this.formData.quantity || this.formData.quantity <= 0) {
       this.formData.totalPrice = 0;
+    } else if (this.formData.quantity && this.selectedBookPrice) {
+      this.formData.totalPrice =
+        this.formData.quantity * this.selectedBookPrice;
     }
-    else if (this.formData.quantity && this.selectedBookPrice) {
-      this.formData.totalPrice = this.formData.quantity * this.selectedBookPrice;
-    } 
   }
-
-
 
   //formatter = (result: BasicModel) => result.Name;
   formatter = (x: { name: string }) => x.name;
-
-
 }

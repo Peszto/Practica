@@ -72,12 +72,20 @@ namespace BookStore.API.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> Remove(int id)
         {
-            var client = await _clientService.GetById(id);
-            if(client == null) return NotFound();
+            try
+            {
+                var client = await _clientService.GetById(id);
+                if (client == null) return NotFound(new ApiResponse {  Message = "The selected client is not in the database!", Success = false});
 
-            var result = await _clientService.Remove(client);
-            if(!result) return NotFound();
-            return Ok();
+                var result = await _clientService.Remove(client);
+                if (!result) return NotFound(new ApiResponse { Message = "An error occured while deleting the client", Success = false});
+                return Ok(new ApiResponse { Message = "Client removed successfully!", Success = true});
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new ApiResponse { Message= ex.Message, Success = false });
+            }
+           
         }
 
         [HttpGet]
@@ -86,11 +94,19 @@ namespace BookStore.API.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<List<BasicModel>>> FilterBookName(string filteredValue)
         {
-            var caseMatch = _mapper.Map<List<BasicModel>>(await _clientService.FilterByUserInput(filteredValue));
+            try
+            {
+                var caseMatch = _mapper.Map<List<BasicModel>>(await _clientService.FilterByUserInput(filteredValue));
 
-            if (!caseMatch.Any()) return Ok(new ApiResponse { Message = "No clients matching this name were found !", Success=false });
+                if (!caseMatch.Any()) return Ok(new ApiResponse { Message = "No clients matching this name were found !", Success=false });
 
-            return Ok(_mapper.Map<IEnumerable<BasicModel>>(caseMatch));
+                return Ok(_mapper.Map<IEnumerable<BasicModel>>(caseMatch));
+
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(new ApiResponse {  Message = ex.Message, Success = false});
+            }
         }
 
     }

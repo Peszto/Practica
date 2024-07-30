@@ -6,7 +6,6 @@ using Microsoft.AspNetCore.Mvc;
 using BookStore.Domain.Interfaces;
 using BookStore.API.Dtos;
 using BookStore.API.Dtos.Response;
-using Bookstore.API.Dtos.Order;
 
 namespace BookStore.API.Controllers
 {
@@ -26,15 +25,22 @@ namespace BookStore.API.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> GetAll()
         {
-            var orders = await _orderService.GetAll();
-            var result = new List<OrderTestResultDto>();
-            for(var i=0; i<orders.Count(); ++i)
+            try
             {
-                var partialResult = ConvertDataToOrderTestResult(orders.ElementAt(i));
-                result.Add(partialResult);
-
+                var orders = await _orderService.GetAll();
+                var result = new List<OrderTestResultDto>();
+                foreach (var order in orders)
+                {
+                    var partialResult = ConvertDataToOrderTestResult(order);
+                    result.Add(partialResult);
+                }
+                return Ok(result);
             }
-            return Ok(result);
+            catch (Exception ex)
+            {
+                return NotFound(new ApiResponse {  Message = ex.Message , Success = false});
+            }
+           
         }
 
         private OrderTestResultDto ConvertDataToOrderTestResult(Orders dbOrder)

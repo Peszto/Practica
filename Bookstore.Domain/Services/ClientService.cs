@@ -1,5 +1,6 @@
 ﻿using BookStore.Domain.Interfaces;
 using BookStore.Domain.Models;
+using BookStore.Domain.Validator;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,10 +14,12 @@ namespace BookStore.Domain.Services
     public class ClientService : IClientService
     {
         private readonly IClientRepository _clientRepository;
+        private readonly ClientValidator _clientValidator;
 
-        public ClientService(IClientRepository clientRepository)
+        public ClientService(IClientRepository clientRepository, ClientValidator clientValidator)
         {
             _clientRepository = clientRepository;
+            _clientValidator = clientValidator;
         }
 
         public async Task<IEnumerable<Client>> GetAll()
@@ -29,7 +32,7 @@ namespace BookStore.Domain.Services
         }
         public async Task<Client> Add(Client client)
         {
-            if (!IsValidEmailAddress(client.Email) || !IsValidPhoneNr(client.PhoneNr))
+            if (!_clientValidator.IsValidEmailAddress(client.Email) || !_clientValidator.IsValidPhoneNr(client.PhoneNr))
                 return null;
             await _clientRepository.Add(client);
             return client;
@@ -58,26 +61,7 @@ namespace BookStore.Domain.Services
             _clientRepository?.Dispose();
         }
 
-        private static bool IsValidEmailAddress(string emailaddress)
-        {
-            try
-            {
-                MailAddress m = new MailAddress(emailaddress);
-                return true;
-            }
-            catch (FormatException)
-            {
-                return false;
-            }
-        }
-
-        private static bool IsValidPhoneNr(string phoneNr)
-        {
-            //exactly 10 digits long
-            string pattern = @"^\d{10}$";
-            return Regex.IsMatch(phoneNr, pattern);
-        }
-
+      
         public async Task<IEnumerable<BasicModel>> FilterByUserInput(string clientName)
         {
             return await _clientRepository.FilterByUserInput(clientName);

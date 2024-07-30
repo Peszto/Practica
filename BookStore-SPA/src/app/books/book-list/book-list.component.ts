@@ -41,28 +41,9 @@ export class BookListComponent implements OnInit {
     this.service.getBooks().subscribe((books) => {
       this.books = books;
       this.listComplet = books;
-      this.fetchCategories();
     });
   }
-
-  private fetchCategories() {
-    this.categoryService.getCategories().subscribe((categories) => {
-      this.categories = categories;
-      this.addCategoryNamesToBooks();
-    });
-  }
-
-  private addCategoryNamesToBooks() {
-    this.books.forEach((book: any) => {
-      const category = this.categories.find(
-        (cat) => cat.id === book.categoryId
-      );
-      if (category) {
-        book.categoryName = category.name;
-      }
-    });
-  }
-
+  
   public addBook() {
     this.router.navigate(['/book']);
   }

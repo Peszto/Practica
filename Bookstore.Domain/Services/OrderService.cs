@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using BookStore.Domain.Interfaces;
 using BookStore.Domain.Models;
+using BookStore.Domain.Validator;
 
 namespace BookStore.Domain.Services
 {
@@ -13,11 +14,13 @@ namespace BookStore.Domain.Services
     {
         private readonly IOrderRepository _orderRepository;
         private readonly IBookRepository _bookRepository;
+        private readonly OrderValidator _orderValidator;
 
-        public OrderService(IOrderRepository orderRepository, IBookRepository bookRepository)
+        public OrderService(IOrderRepository orderRepository, IBookRepository bookRepository, OrderValidator orderValidator)
         {
             _orderRepository = orderRepository;
             _bookRepository=bookRepository;
+            _orderValidator = orderValidator;
         }
         public async Task<IEnumerable<Orders>> GetAll()
         {
@@ -30,10 +33,10 @@ namespace BookStore.Domain.Services
         public async Task<Orders> Add(Orders order)
         {
             Book book = await _bookRepository.GetById(order.BookId);
-            if (!IsOrderQuantityPositiveNumber(order.Quantity)){
+            if (!_orderValidator.IsOrderQuantityPositiveNumber(order.Quantity)){
                 throw new Exception("Quantity has to be greater than 0 !");
             }
-            if (!IsOrderQuantityValid(book.Pieces,order.Quantity, int.MaxValue))
+            if (!_orderValidator.IsOrderQuantityValid(book.Pieces,order.Quantity, int.MaxValue))
             {
                 throw new Exception("There are not enough pieces of books !");
             }
@@ -46,15 +49,6 @@ namespace BookStore.Domain.Services
             await _orderRepository.Add(order);
             await _bookRepository.Update(book);
             return order;
-        }
-
-        private bool IsOrderQuantityPositiveNumber(int requestedQuantity)
-        {
-            return requestedQuantity > 0;
-        }
-        private bool IsOrderQuantityValid(int pieces, int requestedQuantity, int oldQuantity)
-        {
-            return pieces >= requestedQuantity || requestedQuantity<=oldQuantity;
         }
 
         private bool IsOrderExisting(Orders order)
@@ -70,11 +64,11 @@ namespace BookStore.Domain.Services
             Book book = await _bookRepository.GetById(order.BookId);
             Orders oldOrder = await _orderRepository.GetById(order.Id);
 
-            if (!IsOrderQuantityPositiveNumber(order.Quantity))
+            if (!_orderValidator.IsOrderQuantityPositiveNumber(order.Quantity))
             {
                 throw new Exception("Quantity has to be greater than 0 !");
             }
-            if (!IsOrderQuantityValid(book.Pieces, order.Quantity, oldOrder.Quantity))
+            if (!_orderValidator.IsOrderQuantityValid(book.Pieces, order.Quantity, oldOrder.Quantity))
             {
                 throw new Exception("There are not enough pieces of books !");
             }
@@ -83,8 +77,7 @@ namespace BookStore.Domain.Services
                 throw new Exception("The order you are trying to edit does not exist!");
             }                
 
-            
-
+          
             if (oldOrder.Quantity > order.Quantity)
             {
                 book.Pieces += oldOrder.Quantity - order.Quantity;

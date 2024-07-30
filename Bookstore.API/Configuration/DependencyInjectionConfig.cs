@@ -1,5 +1,6 @@
 using BookStore.Domain.Interfaces;
 using BookStore.Domain.Services;
+using BookStore.Domain.Validator;
 using BookStore.Infrastructure.Context;
 using BookStore.Infrastructure.Repositories;
 using Microsoft.Extensions.DependencyInjection;
@@ -11,6 +12,10 @@ namespace BookStore.API.Configuration
         public static IServiceCollection ResolveDependencies(this IServiceCollection services)
         {
             services.AddScoped<BookStoreDbContext>();
+            services.AddScoped<BookValidator>();
+            services.AddScoped<OrderValidator>();
+            services.AddScoped<ClientValidator>();
+
 
             services.AddScoped<ICategoryRepository, CategoryRepository>();
             services.AddScoped<IBookRepository, BookRepository>();

@@ -43,6 +43,7 @@ export class CategoryListComponent implements OnInit {
   }
 
   public editCategory(categoryId: number) {
+    
     this.router.navigate(['/category/' + categoryId]);
   }
 

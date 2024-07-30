@@ -25,10 +25,43 @@ namespace BookStore.API.Controllers
 
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> GetAll()
         {
-            var books = await _bookService.GetAll();
-            return Ok(_mapper.Map<IEnumerable<BookResultDto>>(books));
+            try
+            {
+                var books = await _bookService.GetAll();
+                var result = new List<BookTestResultDto>();
+                foreach (var book in books)
+                {
+                    result.Add(ConvertDataToBookTestResult(book));
+                }
+                return Ok(result);
+
+            }
+            catch (Exception ex)
+            {
+                return NotFound(new ApiResponse { Message = ex.Message, Success = false });
+            }
+        }
+
+        private BookTestResultDto ConvertDataToBookTestResult(Book book)
+        {
+            var result = new BookTestResultDto();
+            result.PublishDate = book.PublishDate;
+            result.Id = book.Id;
+            result.Author = book.Author;
+            result.Description = book.Description;
+            result.Price = book.Price;
+            result.Name = book.Name;
+            result.Pieces = book.Pieces;
+            result.CategoryId = new BasicModel
+            {
+                Id = book.Category.Id,
+                Name = book.Category.Name,
+            };
+
+            return result;
         }
 
         [HttpGet("{id:int}")]
@@ -36,9 +69,19 @@ namespace BookStore.API.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> GetById(int id)
         {
-            var book = await _bookService.GetById(id);
-            if (book==null) return NotFound();
-            return Ok(_mapper.Map<BookResultDto>(book));
+            try
+            {
+                var book = await _bookService.GetById(id);
+                if (book==null) return NotFound(new ApiResponse { Message = "The book with that id does not exist", Success = false});
+                var result = ConvertDataToBookTestResult(book);
+                return Ok(result);
+                //return Ok(_mapper.Map<BookResultDto>(book));
+            }
+            catch (Exception ex)
+            {
+                return NotFound(new ApiResponse { Message = ex.Message, Success = false });
+            }
+            
         }
 
         [HttpGet]
@@ -59,14 +102,22 @@ namespace BookStore.API.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Add(BookAddDto bookDto)
         {
-            if (!ModelState.IsValid) return BadRequest();
+            try
+            {
+                if (!ModelState.IsValid) return BadRequest(new ApiResponse { Message= "Model is not valid!", Success = false});
 
-            var book = _mapper.Map<Book>(bookDto);
-            var bookResult = await _bookService.Add(book);
+                var book = _mapper.Map<Book>(bookDto);
+                var bookResult = await _bookService.Add(book);
 
-            if (bookResult == null) return BadRequest();
+                if (bookResult == null) return BadRequest(new ApiResponse {Message ="The operation failed", Success= false});
 
-            return Ok(_mapper.Map<BookResultDto>(bookResult));
+                return Ok(new ApiResponse { Message = "Book added successfully!", Success= true});
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new ApiResponse { Message=ex.Message, Success = false });
+            }
+           
         }
 
         [HttpPut("{id:int}")]
@@ -74,14 +125,21 @@ namespace BookStore.API.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Update(int id, BookEditDto bookDto)
         {
-            Console.WriteLine("Update");
-            if (id != bookDto.Id) return BadRequest();
+            try
+            {
+                if (id != bookDto.Id) return BadRequest(new ApiResponse { Message = "The book cannot be edited", Success = false});
 
-            if (!ModelState.IsValid) return BadRequest();
+                if (!ModelState.IsValid) return BadRequest(new ApiResponse { Message = "Model is not valid ! ", Success = false });
 
-            await _bookService.Update(_mapper.Map<Book>(bookDto));
+                await _bookService.Update(_mapper.Map<Book>(bookDto));
 
-            return Ok(bookDto);
+                return Ok(new ApiResponse { Message = "Book details updated successfully!", Success = true});
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new ApiResponse {Message = ex.Message, Success = false});
+            }
+           
         }
 
         [HttpDelete("{id:int}")]
@@ -89,13 +147,20 @@ namespace BookStore.API.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> Remove(int id)
         {
-            Console.WriteLine("Delete");
-            var book = await _bookService.GetById(id);
-            if (book == null) return NotFound();
+            try
+            {
+                var book = await _bookService.GetById(id);
+                if (book == null) return NotFound(new ApiResponse { Message = "Book with the specified id cannot be found!", Success = false });
 
-            await _bookService.Remove(book);
+                await _bookService.Remove(book);
 
-            return Ok();
+                return Ok(new ApiResponse {  Message = "Book removed successfully!", Success = true});
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new ApiResponse { Message = ex.Message, Success = false});
+            }
+           
         }
 
         [HttpGet]
@@ -104,11 +169,19 @@ namespace BookStore.API.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<List<Book>>> Search(string bookName)
         {
-            var books = _mapper.Map<List<Book>>(await _bookService.Search(bookName));
+            try
+            {
+                var books = _mapper.Map<List<Book>>(await _bookService.Search(bookName));
 
-            if (books == null || books.Count == 0) return NotFound("No books were found");
+                if (books == null || books.Count == 0) return NotFound(new ApiResponse { Message = "No books were found!", Success = false });
 
-            return Ok(books);
+                return Ok(books);
+            }
+            catch (Exception ex)
+            {
+                return NotFound(new ApiResponse { Message=ex.Message, Success = false});
+            }
+          
         }
 
         [HttpGet]
@@ -117,11 +190,17 @@ namespace BookStore.API.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<List<Book>>> SearchBookWithCategory(string searchedValue)
         {
-            var books = _mapper.Map<List<Book>>(await _bookService.SearchBookWithCategory(searchedValue));
+            try
+            {
+                var books = _mapper.Map<List<Book>>(await _bookService.SearchBookWithCategory(searchedValue));
 
-            if (!books.Any()) return NotFound("No book was founded");
+                if (!books.Any()) return NotFound(new ApiResponse { Message = "No book was found!", Success=false });
 
-            return Ok(_mapper.Map<IEnumerable<BookResultDto>>(books));
+                return Ok(_mapper.Map<IEnumerable<BookResultDto>>(books));
+            }
+            catch (Exception ex) {
+                return BadRequest(new ApiResponse { Message = ex.Message, Success=false }); 
+};
         }
 
         [HttpGet]
@@ -130,12 +209,20 @@ namespace BookStore.API.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<List<BasicModel>>> FilterBookName(string filteredValue)
         {
-            var caseMatch = _mapper.Map<List<BasicModel>>(await _bookService.FilterByUserInput(filteredValue));
-            Console.WriteLine(caseMatch);
+            try
+            {
+                var caseMatch = _mapper.Map<List<BasicModel>>(await _bookService.FilterByUserInput(filteredValue));
+                Console.WriteLine(caseMatch);
 
-            if (!caseMatch.Any()) return Ok(new ApiResponse { Message = "No books match this title!" , Success = false});
+                if (!caseMatch.Any()) return Ok(new ApiResponse { Message = "No books match this title!", Success = false });
 
-            return Ok(_mapper.Map<IEnumerable<BasicModel>>(caseMatch));
+                return Ok(_mapper.Map<IEnumerable<BasicModel>>(caseMatch));
+
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new ApiResponse {Message = ex.Message, Success=false});   
+            }
         }
 
     }

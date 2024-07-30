@@ -8,7 +8,7 @@ namespace BookStore.API.Dtos.Book
         public string Author {get; set;}
         public int Pieces {get; set;}
         public string Description {get;set;}
-        public float Price {get; set;}
+        public decimal Price {get; set;}
         public DateTime PublishDate {get; set;}
     }
 }

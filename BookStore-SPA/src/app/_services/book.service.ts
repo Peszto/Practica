@@ -14,12 +14,12 @@ export class BookService {
 
     constructor(private http: HttpClient) { }
 
-    public addBook(book: Book) {
-        return this.http.post(this.baseUrl + 'books', book);
+    public addBook(book: Book) : Observable<ApiResponse> {
+        return this.http.post<ApiResponse>(this.baseUrl + 'books', book);
     }
 
-    public updateBook(id: number, book: Book) {
-        return this.http.put(this.baseUrl + 'books/' + id, book);
+    public updateBook(id: number, book: Book): Observable<ApiResponse> {
+        return this.http.put<ApiResponse>(this.baseUrl + 'books/' + id, book);
     }
 
     public getBooks(): Observable<Book[]> {

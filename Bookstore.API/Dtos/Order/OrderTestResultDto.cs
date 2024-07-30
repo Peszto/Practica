@@ -1,6 +1,6 @@
 ﻿using BookStore.Domain.Models;
 
-namespace Bookstore.API.Dtos.Order
+namespace BookStore.API.Dtos.Order
 {
     public class OrderTestResultDto
     {

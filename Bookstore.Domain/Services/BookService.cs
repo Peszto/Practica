@@ -3,16 +3,20 @@ using System.Linq;
 using System.Threading.Tasks;
 using BookStore.Domain.Interfaces;
 using BookStore.Domain.Models;
+using BookStore.Domain.Validator;
+
 
 namespace BookStore.Domain.Services
 {
     public class BookService : IBookService
     {
         private readonly IBookRepository _bookRepository;
+        private readonly BookValidator _bookValidator;
 
-        public BookService(IBookRepository bookRepository)
+        public BookService(IBookRepository bookRepository, BookValidator bookValidator)
         {
             _bookRepository = bookRepository;
+            _bookValidator = bookValidator;
         }
 
         public async Task<IEnumerable<Book>> GetAll()
@@ -29,6 +33,10 @@ namespace BookStore.Domain.Services
         {
             if (_bookRepository.Search(b => b.Name == book.Name).Result.Any())
                 return null;
+            if (!_bookValidator.isBookQuantityValid(book.Pieces))
+                throw new Exception("The number of books cannot be less than 0!");
+            if (!_bookValidator.isBookPriceValid(book.Price))
+                throw new Exception("The price of the books cannot be less thamn 0!");
 
             await _bookRepository.Add(book);
             return book;
@@ -38,6 +46,11 @@ namespace BookStore.Domain.Services
         {
             if (_bookRepository.Search(b => b.Name == book.Name && b.Id != book.Id).Result.Any())
                 return null;
+            if (!_bookValidator.isBookQuantityValid(book.Pieces))
+                throw new Exception("The number of books cannot be less than 0!");
+            if (!_bookValidator.isBookPriceValid(book.Price))
+                throw new Exception("The price of the books cannot be less thamn 0!");
+
 
             await _bookRepository.Update(book);
             return book;
