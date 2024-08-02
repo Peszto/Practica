@@ -46,15 +46,15 @@ export class ClientListComponent implements OnInit {
 
   public deleteClient(clientId: number) {
     this.confirmationDialogService
-      .confirm('Atention', 'Do you really want to delete this category?')
+      .confirm('Atention', 'Do you really want to delete this client?')
       .then(() =>
         this.service.deleteClient(clientId).subscribe({
           next: () => {
-            this.toastr.success('The category has been deleted');
+            this.toastr.success('The client has been deleted');
             this.getClients();
           },
           error: (error) => {
-            this.toastr.error('Failed to delete the client.');
+            this.toastr.error('The client cannot be deleted!');
           },
         })
       )

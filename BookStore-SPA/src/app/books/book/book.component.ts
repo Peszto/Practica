@@ -6,6 +6,16 @@ import { BookService } from '../../_services/book.service';
 import { ToastrService } from 'ngx-toastr';
 import { CategoryService } from '../../_services/category.service';
 import { ApiResponse } from '../../_models/ApiResponse';
+import { BasicModel } from '../../_models/BasicModel';
+import {
+  debounceTime,
+  distinctUntilChanged,
+  map,
+  Observable,
+  of,
+  OperatorFunction,
+  switchMap,
+} from 'rxjs';
 
 @Component({
   selector: 'app-book',
@@ -15,6 +25,7 @@ import { ApiResponse } from '../../_models/ApiResponse';
 export class BookComponent implements OnInit {
   public formData!: Book;
   public categories: any;
+  private isCategoryNameValid: boolean = false;
 
   constructor(
     private categoryService: CategoryService,
@@ -31,33 +42,35 @@ export class BookComponent implements OnInit {
       id = params['id'];
     });
 
+    this.getCategories();
     if (id != null) {
       this.loadBookData(id);
     } else {
       this.resetForm();
     }
-
-    this.getCategories();
   }
 
-  private getCategories(){
-    this.categoryService.getCategories().subscribe(categories => {
-      this.categories = categories;
-    }, err => {
-      this.toastr.error('An error occurred on get the records.');
-    });
-
+  private getCategories() {
+    this.categoryService.getCategories().subscribe(
+      (categories) => {
+        this.categories = categories;
+      },
+      (err) => {
+        this.toastr.error('An error occurred on get the records.');
+      }
+    );
   }
 
   private loadBookData(id: number) {
     this.service.getBookById(id).subscribe(
       (book) => {
         this.formData = book;
-        console.log(this.formData);
+        this.isCategoryNameValid = true;
         const publishDate = new Date(book.publishDate);
+        this.formData.categoryId = book.categoryId;
         this.formData.publishDate = {
           year: publishDate.getFullYear(),
-          month: publishDate.getMonth()+1,
+          month: publishDate.getMonth() + 1,
           day: publishDate.getDate(),
         };
       },
@@ -68,13 +81,16 @@ export class BookComponent implements OnInit {
   }
 
   public onSubmit(form: NgForm) {
-    form.value.publishDate = this.convertStringToDate(form.value.publishDate);
-    form.value.categoryId = form.value.categoryId.id;
-
-    if (form.value.id === 0) {
-      this.insertRecord(form);
+    if (form.valid && this.isCategoryNameValid) {
+      form.value.publishDate = this.convertStringToDate(form.value.publishDate);
+      form.value.categoryId = form.value.categoryId.id;
+      if (form.value.id === 0) {
+        this.insertRecord(form);
+      } else {
+        this.updateRecord(form);
+      }
     } else {
-      this.updateRecord(form);
+      this.toastr.error('Please ensure all fields are filled out correctly !');
     }
   }
 
@@ -136,4 +152,33 @@ export class BookComponent implements OnInit {
   private convertStringToDate(date: any) {
     return new Date(`${date.year}-${date.month}-${date.day}`);
   }
+
+  onCategorySelect(event: any) {
+    this.formData.categoryId = event.item;
+  }
+
+  searchCategories: OperatorFunction<string, readonly BasicModel[]> = (
+    text$: Observable<string>
+  ) =>
+    text$.pipe(
+      debounceTime(200),
+      distinctUntilChanged(),
+      switchMap((term) =>
+        term.length >= 2
+          ? this.categoryService.filterCategoryNames(term).pipe(
+              map((response: BasicModel[] | ApiResponse) => {
+                if (Array.isArray(response)) {
+                  this.isCategoryNameValid = true;
+                  return response;
+                } else {
+                  this.toastr.error(response.message);
+                  this.isCategoryNameValid = false;
+                  return [];
+                }
+              })
+            )
+          : of([])
+      )
+    );
+  formatter = (x: { name: string }) => x.name;
 }

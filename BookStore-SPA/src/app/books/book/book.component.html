@@ -64,29 +64,30 @@
       </div>
     </div>
     <div class="form-group">
-      <select
+      <input
+        id="bookTypeahead"
+        type="text"
         class="form-control"
         name="categoryId"
         #categoryId
+        [resultFormatter]="formatter"
+        [inputFormatter]="formatter"
         [(ngModel)]="formData.categoryId"
+        [ngbTypeahead]="searchCategories"
+        placeholder="Book Title"
         required
-      >
-        <option value="null" disabled selected hidden>Category</option>
-        <option *ngFor="let category of categories" value="{{ category.id }}">
-          {{ category.name }}
-        </option>
-      </select>
+        (selectItem)="onCategorySelect($event)"
+        
+      />
       <div
         class="invalid-feedback"
         *ngIf="
-          form.controls['categoryId']?.invalid &&
-          form.controls['categoryId']?.touched
+          form.controls['categoryId']?.invalid && form.controls['categoryId']?.touched
         "
       >
-        Please inform the category
+        Please inform the book.
       </div>
     </div>
-
     <div class="form-group">
       <input
         name="price"

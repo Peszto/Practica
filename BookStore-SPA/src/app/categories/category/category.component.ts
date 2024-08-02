@@ -21,7 +21,7 @@ export class CategoryComponent implements OnInit {
               private toastr: ToastrService) { }
 
   ngOnInit() {
-    this.resetForm();
+    // this.resetForm();
 
     let id;
     this.route.params.subscribe(params => {

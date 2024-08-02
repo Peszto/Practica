@@ -54,7 +54,7 @@ namespace BookStore.API.Controllers
                 var category = _mapper.Map<Category>(categoryDto);
                 var categoryResult = await _categoryService.Add(category);
 
-                if (categoryResult == null) return BadRequest(new ApiResponse { Message= "Something went wrong during insertion! ", Success=false});
+                if (categoryResult == null) return BadRequest(new ApiResponse { Message= "The category name already exists !", Success=false});
 
                 //return Ok(_mapper.Map<CategoryResultDto>(categoryResult));
                 return Ok(new ApiResponse { Message = "Category added successfully!", Success = true });
@@ -121,13 +121,11 @@ namespace BookStore.API.Controllers
         [Route("filter/{filteredValue}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<List<BasicModel>>> FilterBookName(string filteredValue)
+        public async Task<ActionResult<List<BasicModel>>> FilterCategoryName(string filteredValue)
         {
             var caseMatch = _mapper.Map<List<BasicModel>>(await _categoryService.FilterByUserInput(filteredValue));
-            Console.WriteLine(caseMatch);
 
-
-            if (!caseMatch.Any()) return NotFound("No books were found");
+            if (!caseMatch.Any()) return NotFound(new ApiResponse { Message = "No categories match that name!", Success = true });
 
             return Ok(_mapper.Map<IEnumerable<BasicModel>>(caseMatch));
         }

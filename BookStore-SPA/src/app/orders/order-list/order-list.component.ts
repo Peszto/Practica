@@ -42,7 +42,6 @@ export class OrderListComponent implements OnInit {
     this.service.getOrders().subscribe((orders) => {
       this.orders = orders;
       this.listComplet = orders;
-      console.log(orders.length);
     });
   }
 

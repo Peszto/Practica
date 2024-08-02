@@ -43,7 +43,7 @@ export class BookListComponent implements OnInit {
       this.listComplet = books;
     });
   }
-  
+
   public addBook() {
     this.router.navigate(['/book']);
   }
@@ -69,8 +69,8 @@ export class BookListComponent implements OnInit {
               this.toastr.error(response.message);
             }
           },
-          error: () => {
-            this.toastr.error('Failed to delete the book.');
+          error: (err) => {
+            this.toastr.error("The book cannot be removed!");
           },
         })
       )

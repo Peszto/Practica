@@ -14,7 +14,7 @@ export class CategoryService {
 
   constructor(private http: HttpClient) {}
 
-  public addCategory(category: Category) : Observable<ApiResponse> {
+  public addCategory(category: Category): Observable<ApiResponse> {
     return this.http.post<ApiResponse>(this.baseUrl + 'categories', category);
   }
 
@@ -26,7 +26,7 @@ export class CategoryService {
     return this.http.get<Category[]>(this.baseUrl + `categories`);
   }
 
-  public deleteCategory(id: number) : Observable<ApiResponse> {
+  public deleteCategory(id: number): Observable<ApiResponse> {
     return this.http.delete<ApiResponse>(this.baseUrl + 'categories/' + id);
   }
 
@@ -43,6 +43,14 @@ export class CategoryService {
   public filterCategories(filteredValue: string): Observable<BasicModel[]> {
     return this.http.get<BasicModel[]>(
       this.baseUrl + 'category/filter/' + filteredValue
+    );
+  }
+
+  public filterCategoryNames(
+    filteredValue: string
+  ): Observable<BasicModel[] | ApiResponse> {
+    return this.http.get<BasicModel[] | ApiResponse>(
+      this.baseUrl + 'categories/filter/' + filteredValue
     );
   }
 }
