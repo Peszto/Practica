@@ -11,8 +11,9 @@ namespace BookStore.Domain.Models
         public DateTime PublishDate { get; set; }
         public int CategoryId { get; set; }
         public int Pieces { get; set; }
-
         /* EF Relation */
         public Category Category { get; set; }
+
+        public string FileName { get; set; }
     }
 }
